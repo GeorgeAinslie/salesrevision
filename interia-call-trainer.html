@@ -1,0 +1,2170 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Interia Call Trainer</title>
+<style>
+/* --gold = light-blue primary accent · --green = lime secondary · --navy = soft tint panel */
+:root{
+  --bg:#13171c; --panel:#1b2026; --panel-2:#232a31; --ink:#eef2f6; --muted:#9aa6b2;
+  --line:#2c343d; --gold:#5ec8f0; --gold-dim:#2f7fa0; --navy:#1d2a33;
+  --green:#b6e84a; --green-bg:#222e12; --red:#f08a7a; --red-bg:#2e1a16;
+  --blue:#5ec8f0; --accent:#5ec8f0;
+}
+:root:not([data-theme="light"]) {}
+@media (prefers-color-scheme: light){
+  :root:not([data-theme="dark"]){
+    --bg:#f3f8fb; --panel:#ffffff; --panel-2:#eef4f9; --ink:#16212b; --muted:#566571;
+    --line:#dde6ed; --gold:#1b86b8; --gold-dim:#7cc3df; --navy:#e8f4fb;
+    --green:#6f9e12; --green-bg:#edf6d6; --red:#c9453a; --red-bg:#fbe7e4;
+    --blue:#1b86b8;
+  }
+}
+:root[data-theme="light"]{
+  --bg:#f3f8fb; --panel:#ffffff; --panel-2:#eef4f9; --ink:#16212b; --muted:#566571;
+  --line:#dde6ed; --gold:#1b86b8; --gold-dim:#7cc3df; --navy:#e8f4fb;
+  --green:#6f9e12; --green-bg:#edf6d6; --red:#c9453a; --red-bg:#fbe7e4; --blue:#1b86b8;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:var(--bg); color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  line-height:1.5; -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:780px; margin:0 auto; padding:16px;}
+header.top{
+  display:flex; align-items:center; justify-content:space-between; gap:12px;
+  padding:14px 0 18px; border-bottom:1px solid var(--line); margin-bottom:20px;
+}
+.brand{display:flex; align-items:center; gap:12px;}
+.logo-img{height:28px;width:auto;display:block}
+.brand-sub{font-size:12px;color:var(--muted);font-weight:600;letter-spacing:.4px;padding-left:12px;border-left:1px solid var(--line)}
+/* on light theme the cream logo would vanish, so give it a dark chip */
+:root[data-theme="light"] .logo-img, @media (prefers-color-scheme: light){:root:not([data-theme="dark"]) .logo-img{} }
+:root[data-theme="light"] .brand{background:#13171c;border-radius:9px;padding:7px 11px}
+:root[data-theme="light"] .brand-sub{color:#9aa6b2;border-left-color:#2c343d}
+.top-actions{display:flex;gap:8px;align-items:center}
+.icon-btn{background:var(--panel);border:1px solid var(--line);color:var(--muted);border-radius:8px;
+  padding:7px 11px;font-size:12px;cursor:pointer;transition:.15s}
+.icon-btn:hover{color:var(--ink);border-color:var(--gold-dim)}
+
+/* home */
+.hero{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:26px 24px;margin-bottom:16px}
+.hero h2{margin:0 0 6px;font-size:22px}
+.hero .sub{color:var(--muted);font-size:14px;margin-bottom:20px}
+.stat-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:22px}
+.stat{flex:1;min-width:120px;background:var(--panel-2);border:1px solid var(--line);border-radius:12px;padding:14px}
+.stat .n{font-size:26px;font-weight:800;color:var(--gold);line-height:1}
+.stat .l{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:6px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--gold);color:#0b1a22;
+  border:none;border-radius:10px;padding:13px 20px;font-size:15px;font-weight:700;cursor:pointer;transition:.15s;width:100%}
+.btn:hover{filter:brightness(1.07)}
+.btn.secondary{background:var(--panel-2);color:var(--ink);border:1px solid var(--line)}
+.btn.ghost{background:transparent;color:var(--muted);border:1px solid var(--line);font-weight:600}
+.opt-row{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}
+.opt-row .btn{width:auto;flex:1;min-width:140px;font-size:13px;padding:11px 14px}
+.mini-note{font-size:12px;color:var(--muted);margin-top:14px;line-height:1.6}
+.warn-banner{background:var(--red-bg);border:1px solid var(--red);color:var(--ink);border-radius:9px;padding:11px 13px;font-size:12.5px;line-height:1.5;margin-bottom:14px}
+.warn-banner strong{color:var(--red)}
+.coach-box{background:var(--panel-2);border:1px solid var(--green);border-radius:11px;padding:15px 16px;margin-top:22px;font-size:13.5px;line-height:1.6;color:var(--muted)}
+.recall-wrap{margin-top:18px;border-top:1px dashed var(--line);padding-top:16px}
+.recall-h{margin:0 0 6px;font-size:12px;text-transform:uppercase;letter-spacing:1.2px;color:var(--green)}
+.recall-prompt{font-size:13px;color:var(--muted);margin-bottom:9px;line-height:1.5}
+.recall-ta{width:100%;min-height:70px;background:var(--bg);border:1px solid var(--green-bg);border-radius:9px;color:var(--ink);padding:11px;font-size:14px;font-family:inherit;line-height:1.5;resize:vertical}
+.recall-ta:focus{outline:none;border-color:var(--green)}
+
+.focus-pick{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.chip{background:var(--panel-2);border:1px solid var(--line);color:var(--muted);border-radius:20px;
+  padding:7px 13px;font-size:12px;cursor:pointer;transition:.15s;user-select:none}
+.chip.on{background:var(--navy);border-color:var(--gold-dim);color:var(--gold)}
+
+/* progress bar */
+.progress{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.bar{flex:1;height:7px;background:var(--panel-2);border-radius:99px;overflow:hidden;border:1px solid var(--line)}
+.bar>span{display:block;height:100%;background:linear-gradient(90deg,var(--gold),var(--green));width:0;transition:.3s}
+.progress .count{font-size:12px;color:var(--muted);white-space:nowrap;font-variant-numeric:tabular-nums}
+
+/* card */
+.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:22px;margin-bottom:14px;position:relative}
+.tags{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:16px;align-items:center}
+.tag{font-size:10px;text-transform:uppercase;letter-spacing:1px;padding:4px 9px;border-radius:6px;font-weight:700}
+.tag.stage{background:var(--navy);color:var(--gold)}
+.tag.type{background:var(--panel-2);color:var(--muted);border:1px solid var(--line)}
+.rate-row{margin-left:auto;display:flex;align-items:center;gap:5px}
+.rate-label{font-size:10px;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin-right:3px}
+.rate-btn{background:transparent;border:1px solid var(--line);border-radius:8px;width:32px;height:30px;font-size:15px;cursor:pointer;transition:.12s;line-height:1;opacity:.55;filter:grayscale(.3)}
+.rate-btn:hover{opacity:1;filter:none;transform:translateY(-1px)}
+.rate-btn.on{opacity:1;filter:none}
+.rate-btn.on.good{border-color:var(--green);background:var(--green-bg)}
+.rate-btn.on.meh{border-color:var(--gold);background:var(--panel-2)}
+.rate-btn.on.bad{border-color:var(--red);background:var(--red-bg)}
+.flag-btn{margin-left:auto;background:transparent;border:1px solid var(--line);color:var(--muted);
+  border-radius:7px;padding:5px 10px;font-size:11px;cursor:pointer;transition:.15s;display:flex;gap:5px;align-items:center}
+.flag-btn:hover{border-color:var(--red);color:var(--red)}
+.flag-btn.flagged{background:var(--red-bg);border-color:var(--red);color:var(--red)}
+.q-text{font-size:17px;line-height:1.55;margin-bottom:18px;font-weight:500}
+
+textarea{width:100%;min-height:120px;background:var(--bg);border:1px solid var(--line);border-radius:10px;
+  color:var(--ink);padding:13px;font-size:15px;font-family:inherit;line-height:1.5;resize:vertical}
+textarea:focus{outline:none;border-color:var(--gold-dim)}
+
+.mc-opts{display:flex;flex-direction:column;gap:9px}
+.mc-opt{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:13px 15px;cursor:pointer;
+  font-size:15px;transition:.12s;display:flex;gap:11px;align-items:flex-start}
+.mc-opt:hover{border-color:var(--gold-dim)}
+.mc-opt .letter{font-weight:800;color:var(--muted);flex-shrink:0}
+.mc-opt.sel{border-color:var(--gold);background:var(--panel-2)}
+.mc-opt.correct{border-color:var(--green);background:var(--green-bg)}
+.mc-opt.wrong{border-color:var(--red);background:var(--red-bg)}
+
+.reveal{margin-top:18px;border-top:1px dashed var(--line);padding-top:18px;display:none}
+.reveal.show{display:block;animation:fade .25s ease}
+@keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+.reveal h4{margin:0 0 7px;font-size:12px;text-transform:uppercase;letter-spacing:1.2px;color:var(--gold)}
+.model-ans{background:var(--panel-2);border:1px solid var(--line);border-left:3px solid var(--gold);
+  border-radius:8px;padding:14px;font-size:14.5px;line-height:1.6;margin-bottom:18px;white-space:pre-wrap}
+.check-intro{font-size:12px;color:var(--muted);margin-bottom:10px}
+.check{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border:1px solid var(--line);
+  border-radius:9px;margin-bottom:7px;cursor:pointer;transition:.12s;background:var(--bg)}
+.check:hover{border-color:var(--gold-dim)}
+.check .box{width:20px;height:20px;border-radius:5px;border:2px solid var(--muted);flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;margin-top:1px;transition:.12s}
+.check.yes .box{background:var(--green);border-color:var(--green);color:#1a2208}
+.check.yes{border-color:var(--green);background:var(--green-bg)}
+.check .ctext{font-size:14px}
+.scoreline{display:flex;align-items:center;justify-content:space-between;margin-top:16px;gap:12px;flex-wrap:wrap}
+.score-badge{font-size:14px;font-weight:700}
+.score-badge .big{font-size:24px;color:var(--gold)}
+
+.nav{display:flex;gap:10px;margin-top:4px}
+.nav .btn{width:auto;flex:1}
+
+/* results */
+.result-hero{text-align:center;padding:30px 20px}
+.result-hero .score{font-size:56px;font-weight:800;color:var(--green);line-height:1}
+.result-hero .label{color:var(--muted);margin-top:8px}
+.breakdown{margin-top:20px}
+.bd-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)}
+.bd-row .name{flex:1;font-size:14px;text-transform:capitalize}
+.bd-row .bd-bar{width:120px;height:6px;background:var(--panel-2);border-radius:99px;overflow:hidden}
+.bd-row .bd-bar>span{display:block;height:100%;background:var(--gold)}
+.bd-row .pct{font-size:13px;color:var(--muted);width:42px;text-align:right;font-variant-numeric:tabular-nums}
+
+.empty{text-align:center;color:var(--muted);padding:40px 20px;font-size:14px}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--navy);color:var(--gold);
+  border:1px solid var(--gold-dim);padding:11px 18px;border-radius:10px;font-size:13px;z-index:50;
+  box-shadow:0 8px 30px rgba(0,0,0,.4);opacity:0;transition:.2s;pointer-events:none}
+.toast.show{opacity:1}
+.flag-note{width:100%;margin-top:10px;min-height:60px}
+.hidden{display:none !important}
+footer{text-align:center;color:var(--muted);font-size:11px;padding:24px 0 10px}
+a{color:var(--gold)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brand">
+      <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASkAAABICAYAAACqRgPJAAAMTGlDQ1BJQ0MgUHJvZmlsZQAAeJyVVwdYU8kWnltSIQQIREBK6E0QkRJASggtgPQiiEpIAoQSY0JQsaOLCq5dRLCiqyCKHRCxYV9ZFLtrWSyoKOtiwa68CQF02Ve+N983d/77z5l/zjl37r0zANDb+VJpDqoJQK4kTxYT7M8al5TMIj0HRKAGdIEZ8OQL5FJOVFQ4gGWg/Xt5dwMgyvaqg1Lrn/3/tWgJRXIBAEgUxGlCuSAX4oMA4E0CqSwPAKIU8uZT86RKvBpiHRl0EOIqJc5Q4SYlTlPhy302cTFciB8DQFbn82UZAGh0Q56VL8iAOnQYLXCSCMUSiP0g9snNnSyEeC7ENtAGzklX6rPTftDJ+Jtm2qAmn58xiFWx9BVygFguzeFP/z/T8b9Lbo5iYA5rWNUzZSExyphh3h5nTw5TYnWIP0jSIiIh1gYAxcXCPnslZmYqQuJV9qiNQM6FOQNMiMfIc2J5/XyMkB8QBrEhxOmSnIjwfpvCdHGQ0gbmDy0T5/HiINaDuEokD4zttzkhmxwzMO+NdBmX088/48v6fFDqf1Nkx3NU+ph2pojXr485FmTGJUJMhTggX5wQAbEGxBHy7NiwfpuUgkxuxICNTBGjjMUCYplIEuyv0sdK02VBMf32O3PlA7FjJzLFvIh+fCUvMy5ElSvssYDf5z+MBesWSTjxAzoi+bjwgViEooBAVew4WSSJj1XxuJ40zz9GNRa3k+ZE9dvj/qKcYCVvBnGcPD92YGx+HlycKn28SJoXFafyEy/P4odGqfzB94JwwAUBgAUUsKaBySALiFu76rvgnaonCPCBDGQAEXDoZwZGJPb1SOA1FhSAPyESAfngOP++XhHIh/zXIaySEw9yqqsDSO/vU6pkgycQ54IwkAPvFX1KkkEPEsBjyIj/4REfVgGMIQdWZf+/5wfY7wwHMuH9jGJgRhZ9wJIYSAwghhCDiLa4Ae6De+Hh8OoHqzPOxj0G4vhuT3hCaCM8JFwntBNuTxIXyoZ4ORa0Q/2g/vyk/Zgf3ApquuL+uDdUh8o4EzcADrgLnIeD+8KZXSHL7fdbmRXWEO2/RfDDE+q3ozhRUMowih/FZuhIDTsN10EVZa5/zI/K17TBfHMHe4bOz/0h+0LYhg21xBZhB7Bz2EnsAtaE1QMWdhxrwFqwo0o8uOIe9624gdli+vzJhjpD18z3J6vMpNypxqnT6YuqL080LU/5MnInS6fLxBmZeSwO/GOIWDyJwHEEy9nJ2Q0A5f9H9Xl7E933X0GYLd+5+X8A4H28t7f3yHcu9DgA+9zhJ+Hwd86GDX8tagCcPyxQyPJVHK68EOCXgw7fPn1gDMyBDYzHGbgBL+AHAkEoiARxIAlMhN5nwnUuA1PBTDAPFIESsBysAeVgE9gKqsBusB/UgyZwEpwFF8FlcB3cgaunA7wA3eAd+IwgCAmhIQxEHzFBLBF7xBlhIz5IIBKOxCBJSCqSgUgQBTITmY+UICuRcmQLUo3sQw4jJ5ELSBtyG3mAdCKvkU8ohqqjOqgRaoWORNkoBw1D49AJaAY6BS1AF6BL0TK0Et2F1qEn0YvodbQdfYH2YABTw5iYKeaAsTEuFoklY+mYDJuNFWOlWCVWizXC53wVa8e6sI84EWfgLNwBruAQPB4X4FPw2fgSvByvwuvw0/hV/AHejX8j0AiGBHuCJ4FHGEfIIEwlFBFKCdsJhwhn4LvUQXhHJBKZRGuiO3wXk4hZxBnEJcQNxD3EE8Q24iNiD4lE0ifZk7xJkSQ+KY9URFpH2kU6TrpC6iB9IKuRTcjO5CByMllCLiSXkneSj5GvkJ+SP1M0KZYUT0okRUiZTllG2UZppFyidFA+U7Wo1lRvahw1izqPWkatpZ6h3qW+UVNTM1PzUItWE6vNVStT26t2Xu2B2kd1bXU7da56irpCfan6DvUT6rfV39BoNCuaHy2ZlkdbSqumnaLdp33QYGg4avA0hBpzNCo06jSuaLykU+iWdA59Ir2AXko/QL9E79KkaFppcjX5mrM1KzQPa97U7NFiaI3SitTK1VqitVPrgtYzbZK2lXagtlB7gfZW7VPajxgYw5zBZQgY8xnbGGcYHTpEHWsdnk6WTonObp1WnW5dbV0X3QTdaboVukd125kY04rJY+YwlzH3M28wPw0zGsYZJhq2eFjtsCvD3usN1/PTE+kV6+3Ru673SZ+lH6ifrb9Cv17/ngFuYGcQbTDVYKPBGYOu4TrDvYYLhhcP3z/8d0PU0M4wxnCG4VbDFsMeI2OjYCOp0TqjU0ZdxkxjP+Ms49XGx4w7TRgmPiZik9Umx02es3RZHFYOq4x1mtVtamgaYqow3WLaavrZzNos3qzQbI/ZPXOqOds83Xy1ebN5t4WJxViLmRY1Fr9bUizZlpmWay3PWb63srZKtFpoVW/1zFrPmmddYF1jfdeGZuNrM8Wm0uaaLdGWbZttu8H2sh1q52qXaVdhd8ketXezF9tvsG8bQRjhMUIyonLETQd1B45DvkONwwNHpmO4Y6FjvePLkRYjk0euGHlu5DcnV6ccp21Od0ZpjwodVTiqcdRrZztngXOF87XRtNFBo+eMbhj9ysXeReSy0eWWK8N1rOtC12bXr27ubjK3WrdOdwv3VPf17jfZOuwo9hL2eQ+Ch7/HHI8mj4+ebp55nvs9//Jy8Mr22un1bIz1GNGYbWMeeZt58723eLf7sHxSfTb7tPua+vJ9K30f+pn7Cf22+z3l2HKyOLs4L/2d/GX+h/zfcz25s7gnArCA4IDigNZA7cD4wPLA+0FmQRlBNUHdwa7BM4JPhBBCwkJWhNzkGfEEvGped6h76KzQ02HqYbFh5WEPw+3CZeGNY9GxoWNXjb0bYRkhiaiPBJG8yFWR96Kso6ZEHYkmRkdFV0Q/iRkVMzPmXCwjdlLszth3cf5xy+LuxNvEK+KbE+gJKQnVCe8TAxJXJraPGzlu1riLSQZJ4qSGZFJyQvL25J7xgePXjO9IcU0pSrkxwXrCtAkXJhpMzJl4dBJ9En/SgVRCamLqztQv/Eh+Jb8njZe2Pq1bwBWsFbwQ+glXCztF3qKVoqfp3ukr059leGesyujM9M0szewSc8Xl4ldZIVmbst5nR2bvyO7NSczZk0vOTc09LNGWZEtOTzaePG1ym9ReWiRtn+I5Zc2UblmYbLsckU+QN+TpwI1+i8JG8ZPiQb5PfkX+h6kJUw9M05ommdYy3W764ulPC4IKfpmBzxDMaJ5pOnPezAezOLO2zEZmp81unmM+Z8GcjrnBc6vmUedlz/ut0KlwZeHb+YnzGxcYLZi74NFPwT/VFGkUyYpuLvRauGkRvki8qHXx6MXrFn8rFhb/WuJUUlryZYlgya8/j/q57OfepelLW5e5Ldu4nLhcsvzGCt8VVSu1VhasfLRq7Kq61azVxavfrpm05kKpS+mmtdS1irXtZeFlDess1i1f96U8s/x6hX/FnvWG6xevf79BuOHKRr+NtZuMNpVs+rRZvPnWluAtdZVWlaVbiVvztz7ZlrDt3C/sX6q3G2wv2f51h2RHe1VM1elq9+rqnYY7l9WgNYqazl0puy7vDtjdUOtQu2UPc0/JXrBXsff5vtR9N/aH7W8+wD5Qe9Dy4PpDjEPFdUjd9Lru+sz69oakhrbDoYebG70aDx1xPLKjybSp4qju0WXHqMcWHOs9XnC854T0RNfJjJOPmic13zk17tS109GnW8+EnTl/NujsqXOcc8fPe59vuuB54fCv7F/rL7pdrGtxbTn0m+tvh1rdWusuuV9quOxxubFtTNuxK75XTl4NuHr2Gu/axesR19tuxN+4dTPlZvst4a1nt3Nuv/o9//fPd+beJdwtvqd5r/S+4f3KP2z/2NPu1n70QcCDloexD+88Ejx68Vj++EvHgie0J6VPTZ5WP3N+1tQZ1Hn5+fjnHS+kLz53Ff2p9ef6lzYvD/7l91dL97jujleyV72vl7zRf7Pjrcvb5p6onvvvct99fl/8Qf9D1Uf2x3OfEj89/Tz1C+lL2Vfbr43fwr7d7c3t7ZXyZfy+rQAGlEebdABe7wCAlgQAA54bqeNV58O+gqjOtH0I/CesOkP2FbhzqYV7+uguuLu5CcDebQBYQX16CgBRNADiPAA6evRgHTjL9Z07lYUIzwabI76m5aaBf1NUZ9If/B7aAqWqCxja/gvC6YM2RJZ/zgAARDBJREFUeJztfXl8VNXZ//c5585MMtkhYd93CAIqsohIgGoV1KI2o63WpWppUdtaba2vy2SorbXWX98uarG4VEVpYtVK3ZXEHRFUFHBhl1WyZ/a595zn98e9kwSYhCQsQd98P1wmmdx7z/6c5zwrPfDAP383ePBQJBIJCAEAGoAFQKAJGpolezOy6eOP1my55pofLWZmEBGjC6lApaWlori4WHf1UeeAmSURqUX33v/voqIZ54XDDYoIkgCkGhFNwnJ7M4zVK1fPv+Syi+4vLy83Zs6caR31infhQHz6yafMCYvNcJjNSMS+wqF9r0iIYw31zMz89FPP7AYghE3RqJOrf0zB7/cLZ3E0fjfnW3NG/+1Pf7vr9tv/MCF5T2fV7/8SmFkCwNIlj7/KrDlSV2VF66s5Wl/DsbraVJfJlsXLX1n+IwAoLy83OrcFXUjCSMSiKhauh2UmACIAAswpthq2tMdjCJek4FGv5TEMv98vioqKxOzZs61AIKADgQAAZNz9hz+cPqj/4OtHjho5afiIEa5XXnn1eQAoLCzsIuxHEaapNCfiMBNxkDO/wQcOAYHhiruhTPPoV7ILrcJgQNoMUfJKDWYQQIL3PQf+n0VxcbEsLS0FEalAIKAB4KqrrjppxiknXz585Og5QwcNGdg9Nw+WaXIkFrFMM9p1dOgEENE+V0vznJx7u3DswUg1ZqkGi7sGcB+UlZUpIsKJhScOverqH88eOrj/JYMH9Z82aNBAAALRcFQ31NWyMCS0VgZ1rYAudKFD6Dp3txPMTD6fTwwaNOzUKZMnXty/d+/vF44Zk+ZN9yAejyEejlqWUoIAIYggiLUtO+9ipLrQhY6gi0i1A36/XxCRHjVq1NAf/WjB8m99qwhmsA4J07Qa6mNCkhDMbNjMKdkMapdurwtdOCQYYLRxITnnwlRC9f9zcLuz0t1shYIqEolKIaRhazvJ/sdwupUhSQGaYCGtsyv9fxIEAoPALJyNg1qY7vbYQR7d+nXh4OjipDoAImKtFAFsEIlGGR53sU1d6MJhR5emroPokoN3oQtHB12cVBe+0eDG/7lRUpGS3yWktg/sQqeji0h14RsNl2EwuVxsuFxMbJ/IU5EiKYUWhqENMroo1TGGLiLVhW80QqGwq6G2gYL1DYYhJGzp+IF0iLV2ey1GbUN915o4xtA1IF34RoKINACs+eDT+aGYylZKs5SqRUFiXV3Qm0gkPLW1u9cCwMyZM9XRqmsXWkcXkerCNxUMAH9ZdNeGQ3m+C52PLu1eF77RcCJTtHiVlpbK5Kfzc5fa9hjD152TIr/fT4WFhbRu3ToqKioCAFRUVKBw/XouLi3tlHhOtnWCPdePgRnf2EcAUFBQ0FiliooKFBYW8rp167ikpIQds4qvKwdBzAyfzyeKi4vh8/k0AG4WmaLTwQCVNJ+vKAJQARQVNY5FWVkZSjtp3h6roI/e/4BHDhvULFRL6mWltdLZubnivy+8tOnsefNGCCG01jq1FBJAaWlpm2x3161bx8koAm1BMjRKUVGRTsodWoMQAkopWVZWBp/P11Y5A5WWlh7AZdbW1oq8vDx9xx13F9775z+umXj8OEQiUTixtZoeBoMdAa0U0AlFYvlbq4osK/QWbJvmfepRsK6AKgsrG/sxucDaWNcD6u73+8npI9Weyd68r9o7Lq2DqbS07KBc+7p1BVRS0uY6U3FxsViwYAEVFRVpIYROZULgxO8SDjEmACgsLGzx/Yez3cxMZWVlori4GFJKpXXbX+twdKKipIIqUKEP31h8/XDEiNThht/vF85u37y8rMu+971eo0eN7RcMhSe50qSHmTkRj++Oh8NfvPPhh5+9++67e5M3CyGwdOlS2Q5i1RIGvP36G9smnTgBkXDkIESKVMJi+e9nnpl+xfz5bx1iuS3C6R8SQqj9Fmv22aef3mPC+PF9pdvdiyFGetI9bMbjFAwGOSMzbfWOL3ftKH/rrW2bN2+ub/5gcpEdItE87CgtLZUXXnjh/os+q/j00115PfuO6d4rXzZEImvvueee6s6qX3FxMafYRLMvPP/8/sOHDMln4RoqBfWDEBrQIhqJmOlu8d7mzV8myt99d/2OHTtqmj94rI7F0cCROO4RAHnTTbecM3z4CLOhoSZtxJARu/e/ac9Xldm9+vYOf/75uvrrrrvuo9bex8xERDoQCOC8884bPuuUU4tHjhg5Ky83tzAnN6d7Tk6uy+NxQ7psp14zkUAoFMKVwYa6+mB00xcbtq1ft+7jB++8+84Kn8+nmJlKSkooxe5EAPjGG3+fM23yuOM8HslKxRuptlJEtXVVGZ9+9llhRlaWpTSMVCSdHULPDCgGERhmNHr5E48+YeTmFijmBAN2XIS66qrMTV98fkKffgPWDxo0qHL77r25K1e++cH999+/Gy3pyw/sH+HEtQIA94033lI4euSIc3sW5M/KyU4blZeTl5WdneVO93rh9nggiMDMUJaFRCKBuro6/OK6n1U3hOLbt+/ataO6pmbpf0qfWkFEmwCoQyDuBICvvPLaftOnTynslZ8fUmp/DZsdHUJrId77cPXEqr17yu67777tzpjv03a/3y9+85vfaKce8idX/WTySRMnnzd4UJ8TPB7X2PyCHi4ikZub1w1LS5f6ASz82c9uLBrUv++gEcOHbvj8s7WD6hsaek6ePG3lAWMmmcP1Ye+b7765869//ev6VOUfDA5x0kSkACAzM7Pgpl/dMmPQgD7n9O7VY3Rubu4gb3p6t+zsHOHN8MIwJIgZIEApjUgohFAkgutjVm00Fv98x/Yvd2zZsuWNp/7z4lNEtBOHNhZfX3z0/gccra3h4N49HKz8ioOVe1Ne9V/tVhyP8rJnntmIlsMHJ3/v/uJzz6t4JMo1eyu5pqqaa6uquabZVfVVFccjcX5z+Zu7+vXrl57KzaR5qN2rf3T1xGfK/v3sZx+vi8cbGpgTCbYiEY7V13O4pkaFa2vMSE21Ga6uMqO1NVa0rlaZwXrmeIJ1XPH2Ldv5jeVvvO+/xX9h8p37H0mTvz/66BNFe7+q5prqWq6prOTaqr1cW1nJtZV7uXbvXq6rquT66modrKpssb/sy/57w167X2v3VnHd3iquq6zmusqmz4bqGq6rrObayhquqarn2xfecZnT/lY3kdLS0sZQxZMmTRr82EOP/ertN97esGXDZo4HY8ymYh0Nc7yhjiN1NSpcW20FqyvNUHWVGXauaG2NFaurZRUOMcfjzIk4h2pred2aNdEXlj233H/LLRcC8ACAI2xus5jN77dD8N53/wO+hpp6rttbZfdBZXXjZfdrJVftreJIJMF33/3nO4ADw/c2Gyv67cLf+15+/uW1WzZsYTNqMpsmq0iE48Egx4LBuIon1MP3L14IAIv/8fAKK6G5ek8lN1RVcbC6imublW/XoYqrv6rkaDjKi+77x+9TlX8QUDJcMQD4b/YXLX1s6QsfrFxdU7WnijlhMifibEXCHA8GOVxTo0I11VbYma/h6iozUlNtRmqqVayuVsVDIdbxOHMiwcGaGl7/8ZqG55995uU7f3fnWQDczlgkjb6+8ThSgnPOyfTWuSXlxAWYiPeTRxDgElqCRW52Zq9J48f3fmrHjs1+v18kuRu/328EAgELQK9HHnrsrmlTTrp4yJBBMGNRxBNxFYtFwAxBBBCRICLB2t74lFIQgpCIK+ZojEHE+d2yqV+/aRPHFI564sQTTvjBrYHbrvb5fFtLS0sP2JWy0tO1SwrtMqTWlhJNBJQc1wkGkRas+SCzxK4PEUEIodyNC5yxTxwXAU1EJKVLmUpLb6b3oDFsmyUK8D7x6JKfjhw+/OZxxx2XKaVELBpFIhq2ElFNljaFkBJkx4UGEYGJoDWDCFDKAgCOx+Mg1kyC2DAMDB88MG3M6FEzJ02cMPOUk6d/vryiooSIljpjI9omI6kAAKSnZ5kuCU0gpbSWzZlDtkNiQkJY6eku0a93z6EAUFRU1HhTcozOOeOMMT/68U/unTZt2ozcnBxEIiGOhOsUa01gLUACQhqCiISl7cmQnp4WkpKU2y21gBYEYkF6v/nIILfLchuGMXrEyM8P3q4mFBcXSycAorr+5zeefeYZ3/rVmDGjT+nVqweUaSKeiKuG+loGa8EA2Vxs47xtCirS7IjOsSjHiLQQBCkNHjF4UNboUaNOO2ni5NNOmjjx/fLyipuI6DUhBG699dY2jsXXF0dMu6eVJbVlSlYWQ4gD1jJrpgSBu+Vl44Tx43s89dxzm9evX09A0wL8yVVXnfS971389CnTpvZNxCIcqqvRBBYQUgoS++4jzGjOjDEzhF0uAQwzHkU8HtVej1uffc6cOf3791/+98WLfuDz+d5ORajAWmhTA6wEkNJGORkxqm39obUkbjaXmtdVa8EAtC3MkmxZrb04ebyz/ufGG8++4LvfvX3s2LHjtDIRjQSV1oqISAgSBsAwZDNmMdlBzfrKIcBEBAgWBDAsy0IiYXI0EtFpbje+NXvGyBOOH/fEKSdPPePSK394UyAQ2F3u9xsz7U3k4G03E6SUEkJbzJoF9hsnm/hD6lhU5uZmDk4+Btiblc/ns26+8eaic889578nnjg+IxwMq/raahIEIYic6LISDICIIYlgOGRIsBZsmVJZJkCQTYfx/etoCbaUiEaj7ra0CWginhnI6FH67NJbjh8//trePQsQjoR1sL6WobUgIaSwI28fMAyNe9U+XwJCSgIgGYCyFCKmyYhGtTfdjZkzp580cuSwV0eMHHbPDy679OcLFy602r5pfD1xBO2kuPGi5hdpENgOW8lad8vNJelynQ4AC8aMofJyvzFz5kzr+utvu/SGX1z/yvRTpvQN19daiViMSAgJIcl+r97v4n0itTddDIKGIIYhSCjTNOqrq6wJE8YNvnr+1c9dM/+aaT6fT+1/9CMwBDHsoO77taFZ29rVIySarmZv27/O+yn/mp5nJiEEE5F64IGHfvuTH//42XHjxo6LhhuscDTELLQUBgmSDCYFbkGkkrqfbK6GSQAkQEIQSUNaSslgXY3Oyki35pw159Jlz/z3jcsvnz9+ZiBgtedIRMk207492dQTILBGdlZ2v+zs7G5CCE5y03f85o6iyy+/9PkTJozLCNbWWqxMaQgIQfbYNs2zVOcf+/12tC/788DRtOOfCxBcQrRpUJME6qKLLi16bvlz786Zc+a13fKyVX19rWJlCUkshQAJ6H3qiDbMHYawa0oCEAIkDQIJqcyEDNbV6O55OfrCC3xXP/vMM28PHjy4x8KFC/U3OQvREeOkiJIhxpJxKm00F2kopZCZmYWeffoMAgAUFRkzZ86M/fTqqy+86ocXPTxwYD/U11RrQxpG0+zjVDMR9m6cOsB+43Rgu15SSKOhukodVzgq56orL1tSu3fnKcXFxTvvv/9+A0kKQRrJgpgpdbK2doJS/OZwUEDjZE4dec0PCCml1lrnlD722EPf+c68c7W2dENdPYhgCCGbVbElRqypzH36s/HH5rs9OZyJgBQkYrGYiMdNc8qkE4fl5mS+0iPDdfnMmTOfS8mF7g+ZLCcVCRHOpyalTWR7vd1mT53qefqll1BSUqJ2b9t2wpw5Zzw3eED/9PraOu1yGQazbqx1cnbpxuOzBhOgG/ff5FaFZjEbU6s7QBoKB2dIktzdj3981TlXXnblUyeecLwMVldaRMKQ0rAL2We6EOCQR/vXNs6l5O3OI0wEkBCxaAwyYZpnnzV3kgReu3b+/NklJSWVAI5Zjsrv9xtJO8b2oKKi4sgRKZtjSHIKhH1mlQOtNUFK9OrduwcAUVRUFL/sssuGX3H55X8fOXygqq+rg5SG3HdIKWVKohbrsd/+mjz6S0EyVFtljZtw3MALL7nkn0R0xqpVqw542p7TrS/6ttclxXdOcw5i8UUlzBQgSnt66dLSeed+5/RIKGxaluVqNH9IOe/thddEfLiZDASNwSjtEjTg8BuNXzmfmpOZVthVX1utRg0dVHDpVVf9tzpsnufz+Z5uJj9sAS3TsCSRIsFkmnHdrXu+HHfilIFPv/TSHiISL7/w4gPjJozzNlRVWm6XYWhuTuyokfQRAE02D2L3hWh2T5JQtSZDbJtmv7i4WAYCAevHP/7h8fOvvPLfEwrHioaaKmVTJ0BzU72aPpvoEjthW5OfSaSqF+33d4YAGJBCAFq7wrW15py5c8fW3/XHJUR0Znl5OQKBQPtZ/KOAQCBgddSotlMtzhlMYEZGRuYIv98PIvK89NzzT4wbPz6nvqZaSSGaC1SQDMlLOvmTM0Ed+672OjSQYRiRYNCcWVQ0y3+r//qJEyf+vqluzvuS56AjpEchTl4E0oA4sBGNJgZLlixdMm/euafHouGEZVluIcVBpyNrZtjCEbYF6HZaMiIo1sxKK2itBAnQwVrJDBhSyoZgSI0eOZKuuXbBPxQSny9cuHD9ocpF7IJJ5+bmGF6P+wwiWrFo0eJrp0+fPiFUV2NJKQzNTdztvh2U5DQAEtTItxxuJG31pkwpGnTZxZc+OeH44426ymptSClT16ypbQIKipmZwSSElvaRGoAtl2NmaK3tsRaSGqddSzGwiKCZXbFwKDFv3ne+ddcdd143c+bMu46xzMsEgGfMmJF26cU/PK9nn54eKxpnpoOvVGJiw+2hzds2hzrXLYZB2rKQ361bViAQ0H++++5fF8049cRwQ50lJRkEe2FoZjCghZBaCBKGixyNG0NpBmulmaGVpYSUso3zkwBoWMqS2dl5+rRvzb7m3r/f+7fKysoQ21D2vNEgJLV6NkHUWpMQgqRoIZHq/iXZzzBBp2ApbEmJ1koQkVaaFYmmPbS0tFQQkbr7D3f977lnn3VBNBq2zETCLUTrBEprzUII7U5Llx5PutRaIxqNIRIOQzPDZbhkujcdGRlekJCIRsLQllJa630yMO/bjkaFhKyvq1Xjx43tfulFP3j8oYcemlZSUhIrCZQQHcK5WGsNb5YXI0eMyGHmtBMnjPe7DakTESWaRpUa+7TZg2yxfQg0hGHZZz+hAew3PqmPnG1FSUkJEZF65OElf5085eQhDTU1ljSkwWDsxxg1wh57xUTQbo9HutO8BEBEI1EkzIQt5He54Ha7IFwuWPEEYvGYUpYlpDQo+e5UICIk4nFXRlaWmj171i3f+fZ3yoqKirYdK4J0v99PgUCAo1Fr5MSTTlxyXGEh4tEwmpj/VBuOYzemGWneTFS88WbnclJCCDJNE2lpab3OmXvOD089ZfoCtxQ6ZplSSoKtWWblTvNQmjdTWIpFbX0tgvV1iMfiIALS073Iyc0R2VlZQjAjHA4ry7KEtDUkrcNmKUQo1KDGH1fY98Zf/PLyG2761V/D8VhmTk6uFBISFgMQzXhv+zMSDkOrg9vTkWM4mZmVSeRypehvh13TFgByQ7qhIT3OHw2fzxf7+bU/P91X/N2fGaSsqJkw9rdw3x+WZekMr1dIt1t+tnGL+mr3npV79ux+q6q6ckNtTcPGfn36fbXlyy0jevXuVdCjW/7wbvndz+zbr+/oEUMGyUQ8hng8zgfrPymFDNdWm6dOO3n8w/948E4iuoaZJaiVs91BoLQiGAY0od9NN9xw1XGFo3Mj4aASApKhHTG7Da01A6yFkHCleaTXk0aQBLBOgysNinVGR+uRCo5Nmvrldb+cM6vo1LMS4YhJDFdynSV5g32OaERQSrHb4yHD7ZYbNm6M7dq155Oq6pp3o9HY2l27dwAAuuXlIz3NMyQ/P39av34Djhs1YnCux+NGJBLVkkQK5roJQgqKREI8fsJx2ef55v2YiH5dXl4ujwUi1RxWIq7MeFTHY2FqnFkpNsPkAdnSBCEklJmgTiVSRATLspCXl8e3Lww8MHBAX4RCQUgpwMqCFIb25uXKXTt3YeMHH368e9dXz2/evPXNmoaaHXv37kUikcCwgcO4V/++/TPTPd8fNXTwKWPGjBmYlZmJUCSsBbW8mpP2OQwN1hay8/L4uLFjrgLwt88//yL26mvl5YYAaqqrh0CD0YxFVabpmjRlSp9ePXvCMhOtxjvXWoOZ8corr+7Mys1f4XK5VPON0eEHsWfXjhGWaWVndy/YsnPnjk0AqKSkxHz074/2OOecsx/q17ePaqitEVLKlhP22IyCys3Lkxs2fBFZ/eGa+5/+78sPlJY+tjbF3eub/fyrK69cUDh98gklM6ZP++7AQQOpob5Bi1aoIYHA2jIsM6amTz9lgf8m/9+EEJ8l7YZa7JBWIIiESiTQq2evaXPOnDOZCGxzFNS4w2plc4jp6enS8HhkqL4em7dsSYRi8d079+y0cjMzVycsxu7KmtcAgJkPy2ItLi5mAO6ZRUU39O3bBw21VUIQOfKl1M8opTgjw0ubt223Vqxe/dBTTz31p2eeeebT1soZM+akXtf/7IdXTJ406dZRI0d6QsEgS9HyhkFgKK2ktiweNmLYj8aPH//7WbNm1WE/nVFng6Gl1qaAtsjWISR1rY6SLUnkYStFiAFmBYbu/CgIzAy3IWnU8CEcT8QBBllKc3paBidYiuWvv1vx2qsv/uF3f/jDi2i50z8B8DyAzL/c/afvTZ8+/Y5xxxV2DwXrtRRCtLyoCQQJIsh4KMxDBg8aVVxcPPo3v/GXAyh37nKh6ZwgYEtYx7xVXvFR/359YCb4QCLFTXljDEk6bkF8sObji2+69daKg3SHC4Dp9IskInXPX+/52fSTT+4TrKuziFgyt3Rk0WAi5c3MkRVvvvPJvfffd3lZWdlq511UUVEhUVGBysJCLl63jssKCykZEWH27NnW4sX3rlu8GMW/vPa6GedfUFw2aeIJBcH6Wi2JBNOBtIoBkJQUi0YwZOggOu74wr8w87dLS0u5NaLdIliAICgaDOL4CWN7C0GIBBtsITEDgISlWHvSvEK63HL9Z1/Ub922bfn2LVv+/erLL6x45sUXt8OW0O9PILWtFGiuQGgfiouLJRGpKy694qQxo4fPjEeCCszNFDpJMTlArMAQUJo5MzsX76/+IPzYw4+cdc8DiyqAZmMBW3MFAEmtl+MQvueK+e//9gcXXvjSL2745VPjCsf0a2io04ZILcZgEAQRWfGoGjN8WN55c8+ZvWbNmn+XlpaKY8V1xgVH5gpbW8z7pLy30XROSWpBm5QgnU6kAACsEYtGiISEYmZvRrbeW1kl//vSq7/68Y+vvAuwnYNfe+01o7KyktetW7cP2Sl0Ftzs2bNDP73+un/MnXvea7feeN3Lk046cWhDfb1uXU5ld5ZlWapf/36uqZOnnV9aWvop7L6xpJSN1t/Jo9vEiSebhmGgZZamsWGOGp8wYeJUxcxyw4YNxvDhww+YPIZhWMxsKqWEz+cjAHrWrLN7Tpk8ZQGItdZaygNtYpuawFCZWVnyuRdefPvsc+edCSDIzEZJSUkyWkSrwlRHKCyI6PWVH39w+h9uv+OlSRMnFATr65haKNihlyIRDevjx40/7aKLLjueiD7oGDfVVIRpJphYO8a4dp8zkZWT28349PMvYmvXr//D//7lfxe98847uxqfdia+UkoCoNWrV9PEiRNTWO63n4AuWLCAysrKcObcM2f369ePo+EgJ2Widkck77QXl9Ka072ZvGHjZnXffYvmPPL4I2+sWrXKtWzZMpVqLJprvRxHYpfP51vl8ngvv+Xmm17p3TMfiXgcIsVmYZvVAMqyODc3l0eOGekD8FRxcXG723mk0VxvzCkI1L53NX17bBApACQENDOnezPVzt1fGY8+9shVtwUCi5lZlJWVkc/nU23QWlBpaanL5/Nt9rr09/0lgfJRw4d5wqEgixRW741gBoMpLd2LwYMGTiciZuZkyJDG54qLi0VZWZluaGgQ7c0sEg6HiIhUaWkpRowY0dICJiLS5eXlBhHxX/70l1vHFo7JjUbClhC2BXmqRaaV1pk5OfL1t97acPa58+YIIYJLly6VRNRmLY8Td0kvWrTINX/+/I8e+ucj3+vdu+cLPXsUyHgsmlqYbhMGMhNxNWTIYDrzjNOvXLLk4QXJRd1REBEljT8dra3Kys4xXnj55c8efWTJD58oe+JdwOY2m4WVYbbdflTybx2uwH7VKSoqUgC86WlplwlBpLUWRPuaawBN+7+QQjORfOvddwJJApWaYKZsOwNIOM+8dtZZcx8cfM7cK0zTVOCWUpcStFYCBOpR0HMKACGlUDjGjnwdxbFhpepojaRh6LhpGY8vXfqb2wKBxatWrXIREbeDbWWfz5dYtWqVq+yZZ1a+9Mryu5SGlFIoamQxUzzEDKU0sbJQ0KOgP2wnzuaScgbAY8aMYQD7h4s5nGAAmDVrlgUg7YTjx88zDMGO5i+loFFrjfT0dN6+a3di6RNP/ghAw6233mp0lNWfP3++WVpa6v774r8vf++9VYtcnnQJkJVUkx9QWQDKUpJZ0ZBB/c/CQKTNnj37sKnAWQiVnpkjX3z5tX/POfusaU+UPfHuqkWrXLCjFCifz6ccIfERsQ9yCB+PHHl8bu/efXrE4nEFIs2ASnUprS13WhrWffpZ4m/3PvCA3+8Xy5Yta/dYLFu2jJmZPvn4oyV7KythyyJbbR5py0LPXr28o0adlOu4Ln4jcEwQKWYGAcrrzZCvLS9/9eZbb/Y7O4mFDky8iRMnKmYWD/z7X39Zt279nvSMDEMpxbp1GSqZpsleb+agSZMm9SUi7gxXA7/fbzAzbrr++nmjRgzrGw0HtaDkODVnkdmxr9HKlZYm31nx3quLHlhUUV5efhDDyoNj3bp1FjPTsy/+975NW7ZFPB6P0PvN+kZnFhYgAsUiYe7Xp3f/n8756XFaaxQXFx8yJ6PBKjMrW7722vLX55w9p1gIUVNaWionzp9o4ihFriwrs4P1zfn2tyYMHjQ4Iz0zQ2bn5BjZed1kqis3r5vhycyWe/bs3bZmzYo9JSUlHQqiFwgENBHxs88/v2n79h0Rl9vdCvfOICJKxBPscbvzTz/91EGAbQLQ8ZYfOzgmjnvMjLS0NLFpy5bEcy88d7UQgu+8885DCe6lUVFhrF+xomb79i+XH3/C+O8LIRRaaS8RkdZa5efnp02adPLglStXbkmG3D2aKCkqQiAQwKSJJ83tXpDPkYYgp3JkJseCOi0tnXZu36HffPOdPzryjENevIFAQJeUlIhHH33000t+cOmKYUP6z4rFogqp/HUACCmhtVa9evSQQwYPuBjA+wsWLKCkYLgjUFpzRlY2Vq/+IBy4/fdXCiHY4RCPqqFiUv4pXLJ61apVy9PcQrMyBShVVzAgSLnSM+WX2798AYAqKys7IBJrG8FOTKtdkWhkm8twjY7aSpsWN07NGpmZmSgsLBQAUFJSgo5aeR9LaDuRavTfOPzrVghpuTwZxseffPr84sWLvzgcVrPOAqENmzZ8GA5HvkeGAW1ZSLqUNneXSR4FtVLI9rrRr3ev3ENtU0chnaNSrz69J4GZLGWJ5gLTpB2JQ4m02+MRW7/ctu2++/76zr33/iUZeviQUVFRIZiZH3nwsfe1pWZJKbn5Tk6NRoaOzyQzXB4PjRoxogAAipAM1AJIhRaNHVOBGTBcHmUpGK+88tpvV6x4fWOH54SwzdFJODbhfKAsKdmiVG6TSS7o7rt//97dd/9+dnuLPwQNGzu1sbpl530OYHRqMQNDs60RE4BK97iML7dunQTg/ZKSkqQ2+hgAASz3cdFKtfnuqzG1r07npJgZhmFQdU0NVqxYWepEzTzk9967fj0D4K1btrxRWVlFPXvmyzaMFrvdbkTCkRMBPNU8acHRQNJS+MILfzCxe/f8YYlIlIFUKh0bBDAZErt379q6aNEiDcBVXl5+WCbl1q1bjYqKClTX1HwQCoVgSCI7BlVLcj0IaAV3umccYBPb1157zejITs6sdZo3Q658f/Xmu277n3uTbkGH1qJDBrU3k0yK8MHter6iooIAkGLItkhmCLZbELPlak85nQM6yKbV5J95LBAp9rg98pN1n+19ovSxZ/74pzuZmQ+ZpS8rK9MAsGrNmo2RcLjGMHp1M2MxJtE6K2gYBnr06NEpvk9FRUUiEAjoycefMK5P7z7CVJYlKLXBLQMQQjAsC1/t2fPONb+4wZw/f/7hrI4FAN8v/v4XF5x/Nrp3yyOlEi3ezMzQSqEgv8BI/t4xMKTh0paljPXr1y2qBeorKioMHMSE4iigzQqTZPKH8vJy0Sx4nxZtDAOTRDKRhnC5LDSaPLQyfcm2RxLUvnKONEw4PFHyMAagZY960cw61v409gsS0Ara2e4WjQ73BRFpchmypqZ67Y4dO6LOrnk4uAEmIqxYsaJGGsYeIurWzGm+hSrb8flcrja41BxBZOZkj/N60xEJN7R8EzM0axFPJJCe7h13x2/vuD4tLU1YVjtSkrQCIiJWipm5N1hbWutWBeFJDsvt9qTPGDgj7Y0v34jte0PbymUNuD0usWnzZvXMf599AwDde++9HV907fYm7JiuJEUWo1SptNLa804ikgC4tqYqp2UC1WStbdtMEYxU3leHF+T3+2VJSck+PVtRUUGVlZUHaOOJiEmQRURMduAu5w8ppmqSitne4gBE53NSRMTQGrt37toOgCoqKg73OZqisZiR0hDuGEW/fv3zSSRVzi05+9rMvZkwcdFF35/LoLlwTvkd52L2KcD+ZIaViMM0zVbdf5hZKKUQj8cH8EDXYN7Gnzpj2S4wWLvdbrFr9+41y5YtW+EIjzv7qNcikll6yE6EoQFg1KhRvb/7ne/OHD22sEAIOXlA/75eAXSLRqJDPWnug8bUICgnCoeEaZrUq6B7r1ioAWhBcXE0UVpaKi+44ALVWuiVZFjj5O9EZKSnew1Xphcug4BGHiBpXX6gxwa0AtK8SPd6O59ICSEQj8VQG6xfjyNjeMZaWdyU97LNrONRR/Jo0KtnfnpL45cEA41ZX8yEqSWRTlq4H45OdFQKYDvykRRSHsTCnhyBt4H8/IIOV0FKoTWR2Lnrq/cBwHEh6eyjXkokXZcCgQAmT5gw/LLLL//uqNFjpufnF0zr07tPdkZGBtwej80QaAus9X7W6Unsa3Np+6/Zvm1CEOKxKCwzDkqpUTx6aBbgMOuOhQsvGD6q8LTBgwaJjIx0NDQEsW3bl/Xr1338H/9vfrMsEAjocr/fCADa4xGbX37llbs/W/+Jx4zHHA5Kwtbb7a+wdKyOWMPl8WLD1u3BI0ykmtlDNi62plWntYYUAjFTIa6wC2jyZzocaD70xI4vEGlby9DSMwxQ55iPkZRSARC1NZUToCxoZrG/CI0byUczjklroehIsIpNPmkHdQFKMl5glnI/mYhsO+GUUiIajmLP3poPAeCQpwM3uxyZyKFS8WY5INUZs2aNu+zyy28YO3b0vOFDhma507xQZgKJREJZiQib8XBynNoleG9MqcVMJAQdnEA58dYOBxeduj6SiNTvF/72+zNnnPLbMWNGD8rMzrY5bjuGD046fhyqTpl8xcyiohXPLlt2w8xA4G3nubrXX3/9ho6W3emcFIigLBO1VVVfA43EkYY9wbyZme2baUfALKTdsA1yYZom7ara1eF5RUSivr5e7aqs/BAACptldj4WkNTABgIB8cgDj/zyhJOOLxkzcni6lYjBTJhWvL4uGaSw0ZVo/8924BgY2Kagi4sXLf7Td+bO/Xl+91xEoxGrob6OBImkOxLAjAyvl6afeuqU3v0GvDF02JhLiGiJ319uFBUBRShCRaNhysFRBNuMpdOJFJHNUUXi8WNqMnYGkptgmsdzcM7l2AMLKUgI0RBraKgBgD59+rS5EWx7vLOUhqitqY198N7KrUCTMeWxACd0sJo2bdqA35Xc/vep06aeCVYIBYOWshJSSsNozf3q64hk0MU//+nPf7zoexf+nKBUQ0MDAdwY16xRF0eAZSnU19Sogf370VlnnfFYTeVCdXNg5tLCwlJJvo7JFo8NaTIRpOx0meAxBGoXkXJCz3bqxXYqG7hdrh2rV6/eTUQYMWJEmxuRjH4qBCEYbKD3137S6Rtoc/j9fvHkk0+qs087bfBvF/624tRTp51pRkNWJBRkYjYMabRKmpJj1OxTtxF8pI5wB0NSSH7dtdfNPPesc643BMxIJCyEoH1DjTVrORHBkEKGGmrRr1cPffq3T198+ulnDysuLu5wRptjaiJ0wQZr1S5G3+Uy+IioHNoHFh4P7969Ow2OBUN7XyCE0IKEzMrK3BCr3bXHkct0usV0Uga1ZMl/Cn72ixtfnTHj1MHB6kqLwIYhWw8h7ThmayLSLsOAEEIKIUhIeRCLvabnEwmTLcuio82hFRcXs8/nk0Wnnvrb/gMHoKF6r3AZklqPrWD7lLqkFKFgvTlx4sQMn+/CnxPRNR2NGHpMECkCOubd9A1DcuxN0xJtolLE0AxUVddTwmpSgHXGaUMpLbOjCVRW1mwCwEopkfQcUK1ozpvPd2YGpAARRWHbAB7dlrSw8AoLC4mIeOljTzw0+1tFQ0L1NZaQwmCtnGeaOX7bqjxbL6q1drncnJaeIZmECAYbUL23CqFwCNlZWV8SiRY3F9vkSXAsFknLSE/r2S0vF6oN4aoPF/x+vyAifcG8C0YPHzZ0aiIScuLrtUyUG2NEOYOqlZLaSvDY0cPmAvhFUVGRCbRO4lLhmCBSx4Z88BiAI3wMhiKxlrxhkvyJBkMYpBOxhPjnksd/tnX7rjc8mRmCE4lO4TyUEpyWJmnLlh17Adv+ze/3N7ujpTG2p3ZjjAUhoLR1bIgh0KR2v+3m2753+mmz50bD9Ra0Mux0pmK/1dZkVanZ0pnZOaK+LoQPP161duvO3W9s2vTFRzt37lm1ZcvWxEsvLduAgyzWMcV+Wl/2v97lL5W9OnPG9BMb6utbDel8mCEA6CmnTBnXt19vVtpUUpLRpqMnOxsOkUjEY7pnfu6gSy65ZBoRlbcpT+N+OEaIVBdgcx8GEVl5uTmrIeVo56jTwqRkEAkWQiLD69mwePG9Hx3NyrYBnX8APQwoLi7WADKmTp16V15ejq6rqRYuo6U48xqCGZqhM7JyxcrVH25+9ZVXb7+1pORxAPH2lr2utEQQBep6FORvBYkTj2AcswNQ5ETj8LjTp3ozMikRCaIjzIRmrfO6dRNjRo7pDQDr1q1r90u6iNQxhKSN2Lbt243jJ4wDADSqd/cDkQBrzW63G7FYYqrf73+psLDQWLduXacaPjr2Q98IApXMEOO/2T/1+AkT+kYiUWVI0YxC7TsuRAC01pmZ2eLFl19b+93vXXFaJFK5R0qJV1991XDGVwNIJvE8GITf7wdr7QIdxKfrCEFDe2xfu/Ypc5rPWa00G4bR4bNqF5E6BlFdVfWFctxQWhXKAsjI8GLgwIH4/iUX6/Lyct3ZqYy+CfGLkkjGCR9dOPbKHj0KEGqocQKNaKRaOkoxe9PT6aOP19be/Gv/WdFI5R6/3+8OBAKJDoSZIQAqEAjI2dNnjISyAGY62gLHzIzMdxOmOb+jNrBSSMTNKG3evLmLSH0TkOSktm7ZtCEYDMLjcbfiM2dnvCUhkZmZeRIAFBUVHREC5ff7xfr169u8OpwIFF9rbiorK4uEEFZBQUHmgL79pmutoZRqNVS+NKRi6TbeeWfl/R9++uG2VYsWuSbOn99y6IjWQUSkR4wY19/jdg3QSjGOoslQ0qn7w9WrPy6aPoV65neT3BJb3wKYmaVhyJ3bt4ffW/Xe287XX0/t3jcO5Lj6OsuUAQit2zK4GgDeXrnm3e9u35EYO2aE2zSbzXFqvvIJ0ESwFHoWdC8E4BVCRNAB7cnB0NncWWdg8+bNxMw4bfr07vndcvNVIgZBRAzHWHO/HmbNcLndYtuXX2LFypVPMzMdSgDC4uJiKisrwymnTOnfs1fPdKUs3boNgh1E7nCZKZSVlSkhBP5875/Xn3XW3K0DBw0aUF9TDUNqaikWFDX/iQDWShueNLl151evrV69enfStaa9dekiUkcCDplobonbLa/bQXfUQCCgHReETcHgje9Kl3sGUVQ5g3vA/YKEiEUium/vXn1/ff2vCz2ZntWFhYV0GPOtERHxmWeeObBn956DwvE4y5T+Z4aTAMyCYaTBlZ7/wYMP3hXcvXv311ZtGw6HBQCMHDlyRG5ulktrpciJGZwqPTiD2WUYorampnb5G8s3CiFYa607SjQWLFhATz75JE495eTje/fuBTMe1XRE/DNbxtKlS6XP50usWvOJf8rUKf80XC5TWwlBonXDawZgmSZnZmXy9i+/jL+38qOATbQ7lkGoi0h1AO0RDAsilkJg7fpPhwB492D333///RIAb9268c2Tp540g0QzW5r9d28wEqap+w4YaEyaOuWK87477/3y8vLDNqaOMaXr2quvfWHC+PGj6+vrIYSwYzSB7azCyWo51uKKJRYtfvgyAP+cOnWqvP/++9uUyulYwyDn0+3JHJWRkUlKWQcbcxZCUFZW1rZdu3bVNjoIdxBFRUWameXAAQMucrvciEfD4mhHQfD5fNoxGXhsxJBBF57nO+/MUHVVgrV2pyK+TpZJKM2c5s00Idzu/z73wj133RX44A9/KJFlZR3bPI8Ze5SvE5wElG2ymlRasyctHUpbYwDgYCGJd+3apQDwRx99/MS27TsShssjdQtUyokRLU0zoceOGe07//wLC4uKitThyHLj5P7Tv/71zcUnT544ukf3XHNg/z66f59eun/vnrpf7566X+8eul/vHrp/7x66f5+easig/sqQFN2ya+c7ALB1a8bX95g4aBAAIB6PjhBtc9kiSyk01NeP6t+/f69DyTbk9/sNItK3/s//nDNu7JiTYtGIAg5uH5XMIHQYwevWrWNmxoKfLrjshWXPv5eR083t8ng0CMrSSivWzATWzKw1a8VspWVkEBlu92NP/OupBT+95kbnJNDhudBFpNqBQCDARASlottchrHb1ka3MivsjLrk8rhQkN/jOCJqjBnVShmamcXdf/3r+s83bH4/zZsBZtsePxV1E0JQNBTi4cOG5F18oe93RMTFxcVGC7e3CU6USQaQfdqsWbdlZ3p1sL5WmrGIMOPJKyYSiYR9maaIx+NgzfLLbVu+eOqJhzcwMxUVFXx9iZQDKWSUmUGtCMwB+1yslFK9evf2nHHGWcOdsCztXl+OC44CkHXmt8/4f91ysjvFJSYJJ3MQ9u7du3fOOXNnP/jPRx7/am+VyMzOlbm5eSLDm0lpaV5K92ZQdl6uyMrOMbZu2x564OGHA5dfcdkFQoi4Q6A6TD27iFQ7QQRs3LixIZ6Ix0iIgx79hBCkLIUhQweP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" alt="Interia" class="logo-img">
+      <span class="brand-sub">Call Trainer</span>
+    </div>
+    <div class="top-actions">
+      <button class="icon-btn" id="themeBtn" title="Toggle theme">☾</button>
+      <button class="icon-btn" id="flagsBtn" title="Review your feedback">💬 <span id="flagCount">0</span></button>
+    </div>
+  </header>
+
+  <!-- HOME -->
+  <section id="home">
+    <div class="hero">
+      <h2>Morning reps</h2>
+      <div class="sub">Write the answer, reveal the model, grade yourself straight. ~30 mins. Be ruthless with the checklist — "basically right" doesn't count.</div>
+      <div class="stat-row">
+        <div class="stat"><div class="n" id="st-done">0</div><div class="l">Sessions done</div></div>
+        <div class="stat"><div class="n" id="st-avg">–</div><div class="l">Avg score</div></div>
+        <div class="stat"><div class="n" id="st-streak">0</div><div class="l">Day streak</div></div>
+      </div>
+      <button class="btn" id="startBtn">Start today's 50 →</button>
+      <div class="opt-row">
+        <button class="btn secondary" id="start25">Quick 25</button>
+        <button class="btn secondary" id="startAll">Full bank (100)</button>
+      </div>
+      <div class="mini-note">
+        <strong style="color:var(--ink)">Focus a session</strong> (optional) — drill just your weak spots:
+      </div>
+      <div class="focus-pick" id="focusPick"></div>
+      <div class="mini-note" style="margin-top:18px;border-top:1px solid var(--line);padding-top:14px">
+        Progress and feedback save to <strong style="color:var(--ink)">this browser only</strong>. Switching device or browser starts blank — in the 💬 screen, hit <strong style="color:var(--ink)">Download backup</strong> before you switch, then restore it here:
+        <div style="margin-top:9px"><button class="btn ghost" id="restoreBtn" style="width:auto;padding:9px 14px;font-size:12px">⬆ Restore feedback from backup</button></div>
+        <input type="file" id="restoreInput" accept="application/json,.json" style="display:none">
+      </div>
+    </div>
+  </section>
+
+  <!-- QUIZ -->
+  <section id="quiz" class="hidden">
+    <div class="progress">
+      <button class="icon-btn" id="quitBtn">✕</button>
+      <div class="bar"><span id="progBar"></span></div>
+      <div class="count"><span id="qNum">1</span>/<span id="qTotal">50</span></div>
+    </div>
+    <div class="card" id="qCard"></div>
+  </section>
+
+  <!-- RESULTS -->
+  <section id="results" class="hidden"></section>
+
+  <!-- FLAGS -->
+  <section id="flagsView" class="hidden"></section>
+
+  <footer>Built for George · Interia · keep it blunt</footer>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const QUESTIONS = [
+
+// ───────────────────────────── OPEN ─────
+{
+  id:1, type:"mc", stage:"open", theme:"open-vs-closed",
+  prompt:"Prospect snaps 'what's this regarding?'. You'd planned to say 'Are you the person who handles new work?' — what's better?",
+  options:[
+    "'How are you getting most of your work in at the minute?'",
+    "'Are you the one who deals with the marketing side?'",
+    "'Do you handle getting new customers in yourself?'",
+    "'Is now an alright time to ask you a couple of things?'"
+  ],
+  answer:0,
+  model:"A — it's open (how), gets a story, and sidesteps the gatekeeper question entirely. The other three are all closed (Are/Do/Is) and die on a one-word answer.",
+  recall:"Write your go-to open opener question, and why closed ones stall:"
+},
+{
+  id:2, type:"write", stage:"open", theme:"short-opener",
+  prompt:"Blunt guy, clearly rushing, impatient 'what is it?'. Give your SHORT one-breath opener, then the move after he says 'go on'.",
+  model:"'Fair enough, quick version: we get construction companies more jobs, and we don't charge till the work lands on your desk. Worth 20 seconds, or shall I let you go?' — then on 'go on': 'How are you getting your work in at the minute?'",
+  checklist:[
+    "ONE breath, no two-problem hook (he's rushing)?",
+    "Gave him the exit ('or shall I let you go')?",
+    "Whole offer dropped plainly (no 'deliver paid work')?",
+    "Follow-up was OPEN (what/how), no 'okay cool' filler?"
+  ],
+  recall:"Write your short one-breath opener word for word:"
+},
+{
+  id:3, type:"mc", stage:"open", theme:"crutch-words",
+  prompt:"What's wrong with: 'Hi, basically we deliver paid work to companies, and a lot of the companies I speak with are getting their trousers pulled down on pricing.'?",
+  options:[
+    "Both 'deliver paid work' and 'a lot of companies I speak with' are weak filler",
+    "It's too short — you'd need to explain the full offer before he'll engage",
+    "You should give your company name and credentials before anything else",
+    "It raises pricing too early, before you've built any value with him"
+  ],
+  answer:0,
+  model:"'Deliver paid work' is the phrase that's made prospects go 'say that again?' — say 'get you more jobs'. And 'a lot of companies I speak with' is a filler crutch that does nothing and sounds scripted. Both out.",
+  recall:"Write the two phrases to kill and what to say instead:"
+},
+
+// ───────────────────────────── DISCOVERY ─────
+{
+  id:4, type:"mc", stage:"discovery", theme:"open-vs-closed",
+  prompt:"He says 'we've got someone in-house doing the ads.' Best next line?",
+  options:[
+    "'Nice. How's that been going for you?'",
+    "'Are you happy with the results they get you?'",
+    "'Is it actually bringing you decent leads though?'",
+    "'Do they do your Google and your Meta both?'"
+  ],
+  answer:0,
+  model:"A — open and NEUTRAL, lets him decide if there's a crack. The others are closed and/or leading (B and C plant doubt, which makes him defend them; D is a dead factual yes/no).",
+  recall:"Write the neutral-open reply to 'we've got someone in-house':"
+},
+{
+  id:5, type:"mc", stage:"discovery", theme:"open-vs-closed",
+  prompt:"Which is the stronger discovery question?",
+  options:[
+    "'What's been your experience with ads?'",
+    "'Did ads work for you?'",
+    "'Have you ever given ads a proper go?'",
+    "'Were the ads worth the money for you?'"
+  ],
+  answer:0,
+  model:"A — open, pulls a story, and the frustration surfaces inside the story. The other three are closed (Did/Have/Were), yes/no, dead end, and assume a clean outcome.",
+  recall:"Write why the open version beats all three closed ones:"
+},
+{
+  id:6, type:"mc", stage:"discovery", theme:"booked-up",
+  prompt:"'We're fully booked, solid for months.' Best response?",
+  options:[
+    "'Nice, good problem. Where's most of that work coming from at the minute?'",
+    "'Would you be able to take on a few more jobs on top of that though?'",
+    "'So you don't really need any more leads coming in right now then?'",
+    "'Could you handle another three to five extra jobs a month if I got them?'"
+  ],
+  answer:0,
+  model:"A — a WORLD question (where's it from), feels like interest, and sets up 'what happens when it dips?'. B/C/D are pitch questions he can smell, and they hand him an easy no.",
+  recall:"Write your reply to 'we're fully booked' + the follow-up that finds the gap:"
+},
+{
+  id:7, type:"mc", stage:"discovery", theme:"interrogation",
+  prompt:"You've just asked, in a row: 'Is it in-house or agency?' / 'Do you do Checker Trade?' / 'Have you tried Google?' / 'How much did you spend?'. What's the fix?",
+  options:[
+    "Make the key ones open, and react between them like a human",
+    "Ask them faster so it feels less like an interrogation",
+    "Add a compliment before each question to soften it",
+    "Save all the questions for the second call instead"
+  ],
+  answer:0,
+  model:"Four closed questions in a row = interrogation (the Ruben call). Each dies on one word so you keep restarting. Flip the key ones to open — 'how are you handling marketing?' / 'what happened when you tried it?' — and react between them, don't just fire the next.",
+  recall:"Write the rule on stacking closed questions, and the fix:"
+},
+{
+  id:8, type:"write", stage:"discovery", theme:"blunt-prospect",
+  prompt:"BLUNT prospect, short cold answers, testing if you're worth it: 'just tell me what you do.' Soft-open questions annoy this guy. What do you say?",
+  model:"Match his energy: 'Straight up: we run your Google and Meta ads, you pay nothing until a qualified lead lands, then 30% of your spend. That's it. You running anything at the minute?' Concrete and fast, THEN one direct question. Don't waffle with 'so how's it all going?' — he'll think you're stalling.",
+  checklist:[
+    "Matched his directness (didn't soft-pedal)?",
+    "Stated the offer concretely and fast?",
+    "Still ended on a question to keep him talking?",
+    "Read that THIS personality needs directness over soft-open?"
+  ],
+  recall:"Write how you handle a blunt guy — short, sharp, still curious:"
+},
+{
+  id:9, type:"mc", stage:"discovery", theme:"waffler",
+  prompt:"WAFFLER — friendly, two minutes on his van, dog, the weather, going nowhere. How do you steer back WITHOUT killing rapport?",
+  options:[
+    "Ride the warmth, then redirect with an open question about his work",
+    "Politely cut in and tell him you'll need to get to the point soon",
+    "Wait quietly until he runs out of steam, then start your pitch",
+    "Keep matching his tangents so he likes you, then slip the pitch in"
+  ],
+  answer:0,
+  model:"Ride it, don't fight it: 'Haha love it. Tell me though — how are you actually getting the work in at the minute?' You point his chattiness at something useful. Cutting him off kills the rapport he's handing you.",
+  recall:"Write how you redirect a waffler without going cold:"
+},
+{
+  id:10, type:"mc", stage:"discovery", theme:"small-label",
+  prompt:"He says 'yeah the agency's alright I suppose.' You reply 'sounds like they're not exactly setting your world on fire.' What is that, and what's it doing?",
+  options:[
+    "A small label (Voss) — names the feeling and keeps him talking",
+    "A mirror (Voss) — repeating his words back to get more detail",
+    "A calibrated question — making him solve your problem for you",
+    "A reframe (Hormozi) — flipping the logic of his objection"
+  ],
+  answer:0,
+  model:"Small label (Voss): naming the feeling you heard. It keeps him talking without another question AND builds a brick toward the big summary later. Labelling a negative diffuses it and draws out more.",
+  recall:"Write what a small label is and what it does for you:"
+},
+
+// ───────────────────────────── PAIN ─────
+{
+  id:11, type:"write", stage:"pain", theme:"stop-on-heat",
+  prompt:"With real anger: 'Last lot charged me two grand a month and the leads were junk — wrong postcodes, no budget, total waste.' Give your exact next line. (No technical question, no pitch.)",
+  model:"Label it and shut up: 'So you paid two grand a month and got sent junk — wrong areas, no budget, nothing that'd ever buy.' Then silence. Let him pour out more. Don't ask 'Google or Meta?', don't pitch. The anger is the setup for your reframe later — first let it burn.",
+  checklist:[
+    "Labelled the pain back in HIS words?",
+    "Then went SILENT?",
+    "Avoided a technical question (Google/Meta/spend)?",
+    "Avoided pitching over it?"
+  ],
+  recall:"Write your reflex when you hear real heat — the move, in order:"
+},
+{
+  id:12, type:"mc", stage:"pain", theme:"ran-past-heat",
+  prompt:"Prospect: 'I've been burned four or five times in two years, promised the world every time.' You replied 'Yeah it's hard for us too, that's why we don't charge until you see value...' What did you do wrong?",
+  options:[
+    "Pitched over his wound instead of labelling it and letting him vent",
+    "Didn't mention your track record or proof points early enough in the call",
+    "Apologised and sounded unsure when you should have stayed confident",
+    "Asked about his budget and spend far too soon in the conversation"
+  ],
+  answer:0,
+  model:"You pitched over his deepest frustration and talked about yourself. Correct order: label it ('sounds like you've been let down more than once'), silence, let him vent, mirror the worst bit, get a 'that's right' — THEN reframe. Your best argument only lands fired AT an open wound, not over it.",
+  recall:"Write the correct order when someone's venting a wound:"
+},
+{
+  id:13, type:"write", stage:"pain", theme:"reframe-burned",
+  prompt:"He's fully vented about being burned — paid up front, got nothing. You've labelled it, he said 'that's exactly it.' NOW give your reframe (Hormozi).",
+  model:"'Here's the difference. Every one of those charged you whether it worked or not. We don't take a penny until a qualified lead actually lands. The exact thing that burned you — paying for nothing — can't happen here, because we don't get paid when it happens.' Then ask for the next step.",
+  checklist:[
+    "Only reframed AFTER the vent + 'that's right'?",
+    "Contrasted fixed/up-front vs pay-only-when-it-works?",
+    "Explicitly said the thing that burned him can't happen here?",
+    "Re-asked (moved toward booking) after?"
+  ],
+  recall:"Write the burned reframe in your own words, ending with the re-ask:"
+},
+{
+  id:14, type:"mc", stage:"pain", theme:"fact-vs-objection",
+  prompt:"'We're booked 18 months on one commercial project, we source our own sites, don't advertise, wouldn't take more work.' Is this a FACT or an OBJECTION?",
+  options:[
+    "A FACT — accept it, exit warm, grab a referral on the way out",
+    "An OBJECTION — dig in, label it, and keep him on the line",
+    "A FACT — but push once more to be sure he won't change his mind",
+    "An OBJECTION — reframe it and move straight to booking a call"
+  ],
+  answer:0,
+  model:"FACT. Stacked reasons, no feeling, genuine wrong-fit. Accept it, don't dig, exit warm, and grab a referral on the way out. Pushing a stacked fact just annoys him (the Benjamin profile — correctly disqualified).",
+  recall:"Write the difference between a fact and an objection, and what you do with each:"
+},
+{
+  id:15, type:"mc", stage:"pain", theme:"fact-vs-objection",
+  prompt:"'Yeah we get leads but honestly half of them are tyre-kickers, does my head in.' FACT or HEAT?",
+  options:[
+    "HEAT — feeling's attached, so dig: label it and let him expand",
+    "FACT — he's just describing his setup, accept it and move on",
+    "HEAT — so pitch your solution straight away while he's annoyed",
+    "FACT — stacked reasons mean he's a wrong fit, exit with a referral"
+  ],
+  answer:0,
+  model:"HEAT. 'Does my head in' is feeling attached to a problem — an opening, not an exit. Label it ('sounds like you're wasting time on people who were never going to buy'), silence, let him expand. Don't pitch yet (C) — dig first.",
+  recall:"Write what tells you it's HEAT not a fact (the tell to listen for):"
+},
+{
+  id:16, type:"mc", stage:"pain", theme:"repeated-pain",
+  prompt:"He's mentioned THREE times that leads come from the wrong areas. What does that tell you, and what do you do?",
+  options:[
+    "A flashing buying signal — reflect it and tie your fix to it",
+    "He's stuck in a loop — change the subject to something more positive",
+    "He wants reassurance — tell him everyone has that problem",
+    "He needs the data — ask him his exact cost per lead and spend"
+  ],
+  answer:0,
+  model:"Three mentions = flashing light, he's begging you to say 'that's exactly what we fix.' Don't ask another data question (D). Lock on: 'so the one thing that keeps happening is leads from miles outside your patch — that's the exact thing our setup kills, because you don't pay until a qualified, local lead lands.'",
+  recall:"Write what a repeated pain means and your move for it:"
+},
+{
+  id:17, type:"write", stage:"pain", theme:"mirror",
+  prompt:"He says 'the whole thing's just been a nightmare since we started.' Give a MIRROR (Voss) and what you do right after.",
+  model:"'A nightmare?' — then stop talking. His own word back, up-inflected, makes him expand on exactly what the nightmare is, at no cost to you.",
+  checklist:[
+    "Mirrored HIS word ('nightmare?')?",
+    "Short (1-3 words), up-inflected?",
+    "Went silent after?"
+  ],
+  recall:"Write what a mirror is and the one rule after you use it:"
+},
+{
+  id:18, type:"mc", stage:"pain", theme:"stop-on-heat",
+  prompt:"Prospect vents real frustration about his current provider. Best immediate response?",
+  options:[
+    "Label the frustration back in his words, then go silent",
+    "Drop your best proof story (the £3.50 cost-per-lead campaign)",
+    "Ask whether it was on Google or on Meta",
+    "Explain how your tool iterates faster than an agency does"
+  ],
+  answer:0,
+  model:"Label + silence. Proof stories and tool talk are pitching over the pain; 'Google or Meta?' cools his heat. Dig first, always.",
+  recall:"Write the one correct first response to a vent:"
+},
+{
+  id:19, type:"write", stage:"pain", theme:"holiday",
+  prompt:"He's admitted the quiet months stress him out — cash gets tight, he chases work he doesn't want. Run the HOLIDAY move.",
+  model:"'If those quiet months just didn't happen — steady work all year — what would that actually change for you?' Then shut up and let HIM paint it. Whatever he says (less stress, hire that extra lad, stop taking rubbish jobs) is the holiday, in his words, and you sell it back later.",
+  checklist:[
+    "Used the 'if [problem gone]' structure?",
+    "Ended with 'what would that change/mean for you'?",
+    "Noted you then go silent and let HIM paint it?"
+  ],
+  recall:"Write the holiday move: Part 1 (if...) and Part 2 (fixed ending), then silence:"
+},
+{
+  id:20, type:"mc", stage:"pain", theme:"holiday",
+  prompt:"What's the TRIGGER for the holiday move, and why can't you do it at the start of the call?",
+  options:[
+    "He's just admitted a frustration you can contrast against",
+    "He's asked about price — too early and it sounds pushy",
+    "He's gone quiet — you need to fill the silence with a vision",
+    "He's said yes to a call — it reinforces the decision afterwards"
+  ],
+  answer:0,
+  model:"Trigger: an admitted frustration. It only lands as a contrast to a pain he owns. Paint it before he's confessed anything and it's just you describing a dream he bats away. He has to own the problem first.",
+  recall:"Write the trigger for the holiday and why timing matters:"
+},
+
+// ───────────────────────────── PITCH ─────
+{
+  id:21, type:"mc", stage:"pitch", theme:"pitch-too-early",
+  prompt:"He's said one mildly annoyed thing about his agency. You launch: 'So what we do is run Google and Meta on a tool we built over 12 months that iterates in real time...' What's wrong?",
+  options:[
+    "Pitched before digging, and dumped mechanism nobody asked for",
+    "Didn't explain the tool in enough detail to build trust",
+    "Should have named the price before describing the service",
+    "Talked about Meta when you should lead with Google"
+  ],
+  answer:0,
+  model:"You pitched too early with no dug pain and no 'that's right', so it lands on nothing — and you dumped mechanism (the tool, 12 months) nobody asked for. Sell the holiday not the plane: they buy the outcome. Dig first, reflect, THEN pitch outcome.",
+  recall:"Write the two errors here and the correct order:"
+},
+{
+  id:22, type:"mc", stage:"pitch", theme:"sequencing",
+  prompt:"Correct order: (a) pitch the offer, (b) summarise to 'that's right', (c) dig the frustration with label+silence, (d) prospect admits a frustration.",
+  options:[
+    "d → c → b → a",
+    "d → a → c → b",
+    "a → d → c → b",
+    "c → d → b → a"
+  ],
+  answer:0,
+  model:"d → c → b → a. Admit frustration → dig with label+silence → summarise to 'that's right' → THEN pitch. The pitch is last and only after the 'that's right' earns it.",
+  recall:"Write the four-step order from frustration to pitch:"
+},
+{
+  id:23, type:"mc", stage:"pitch", theme:"mechanism-deflect",
+  prompt:"Mid-pitch: 'so how does the targeting actually work technically?' You don't want a mechanism lecture. Best move?",
+  options:[
+    "'That's the bit we handle so you don't have to — how were you hoping it'd work?'",
+    "Walk him through the pixel and audience setup so he trusts it",
+    "Tell him it's proprietary and you can't share how it works",
+    "Explain the 12-month build and the AI behind the tool"
+  ],
+  answer:0,
+  model:"Deflect to outcome and park detail for the demo. A technical lecture on the phone loses the room; every mechanism detail is a fresh surface for objections. B and D are the lecture; C sounds evasive.",
+  recall:"Write your deflect line for 'how does it technically work?':"
+},
+{
+  id:24, type:"mc", stage:"pitch", theme:"price-then-silence",
+  prompt:"You've just stated the deal (build free, they fund ads, 30% of spend only once qualified leads land). What do you do the instant you finish?",
+  options:[
+    "Stop talking — the first one to speak after the price re-opens it",
+    "Immediately explain why 30% is genuinely good value for him",
+    "Ask him straight away whether that price sounds fair to him",
+    "Move straight into booking the call before he can react to it"
+  ],
+  answer:0,
+  model:"Go silent. Price then silence. The first to speak after the price re-opens it. The silence is him processing, not a gap to fill.",
+  recall:"Write the rule: after you state price, you ___:"
+},
+{
+  id:25, type:"mc", stage:"pitch", theme:"crutch-words",
+  prompt:"What's weak about: 'I'm trying to speak to companies doing north of a million in annual turnover'?",
+  options:[
+    "'I'm trying to' is weak and self-serving — ask his turnover directly or cut it",
+    "A million in turnover is too low a bar to be naming out loud to him",
+    "You should say 'we only work with' instead, to sound more exclusive",
+    "Turnover is too personal to bring up on a first cold call like this"
+  ],
+  answer:0,
+  model:"'I'm trying to' is tentative and about YOUR agenda, not his world. Either ask his turnover directly ('what sort of turnover are you working with?') or don't flag it at all.",
+  recall:"Write what's weak about 'I'm trying to' and the fix:"
+},
+
+// ───────────────────────────── CLOSE ─────
+{
+  id:26, type:"write", stage:"close", theme:"close-on-signal",
+  prompt:"He says 'yeah, I'd take a look at jobs over 250k if they came in.' That's a buying signal. Give your close. (Do NOT ask for his email.)",
+  model:"'So those 250k-plus jobs are exactly what you want more of — if I could land you one, nothing out of your pocket until it's in the door, is that something you'd want to see? ... Perfect. Quick second call, me and my partner show you exactly how we land those 250k jobs. Mornings or evenings better?' Mirror his own spec straight back, then offer to get it and book — never 'I'll email you'.",
+  checklist:[
+    "Closed for the BOOKING, not the email?",
+    "Mirrored his own spec (250k) straight back?",
+    "Offered a concrete next step with a time choice?",
+    "Tied in zero-risk ('nothing until it's in')?"
+  ],
+  recall:"Write your close when a buying signal lands — mirror spec, offer to get it, book:"
+},
+{
+  id:27, type:"mc", stage:"close", theme:"asked-for-email",
+  prompt:"Prospect gives a clear buying signal — tells you exactly the job he wants. You say: 'Great, what's your email and I'll ping some info over.' What did you do wrong?",
+  options:[
+    "Downgraded a hot buying signal into an email instead of booking the call",
+    "Didn't ask which email address he'd prefer you to send it over to",
+    "Should have offered to send a proper brochure, not just loose info",
+    "Asked for his email before you'd confirmed his budget would fit"
+  ],
+  answer:0,
+  model:"You met a buying signal with an email ask. 'I'll ping you something' is the weak default you reach for instead of closing. When a man tells you exactly what he wants, offer to GET it and book the call.",
+  recall:"Write what you do instead of asking for the email on a buying signal:"
+},
+{
+  id:28, type:"write", stage:"close", theme:"either-or-close",
+  prompt:"He's warm and nodding but hasn't committed. Give the either/or (assumed) close that makes it WHICH not WHETHER.",
+  model:"'Two ways we can start. Either run us alongside what you've already got — carve off a slice of budget, same scoreboard, let the results decide. Or put us on the full budget from day one. Either way nothing owed until it's producing, pause whenever. Which fits you better?'",
+  checklist:[
+    "Offered TWO start paths (which, not whether)?",
+    "Both paths kept it zero-risk / pausable?",
+    "Ended asking which fits?"
+  ],
+  recall:"Write your either/or close, both paths zero-risk:"
+},
+{
+  id:29, type:"mc", stage:"close", theme:"book-the-time",
+  prompt:"He agrees to a second call: 'yeah go on, sometime next week.' Why is 'sometime next week' a problem and what do you do?",
+  options:[
+    "It's a polite no with no commitment — pin a fixed slot with a tie-down",
+    "It's fine — leaving it flexible makes him more likely to actually show",
+    "It's too soon anyway — give him a good two weeks to think it over",
+    "It's a buying signal — skip the call and start onboarding him now"
+  ],
+  answer:0,
+  model:"'Sometime' evaporates. Pin a fixed slot within ~36 hours and tie it down: 'Tuesday evening or Wednesday morning? ... Wednesday it is. Any reason you wouldn't make that?' A spoken yes to a fixed time beats a vague 'next week'.",
+  recall:"Write why 'sometime' fails and your tie-down line:"
+},
+{
+  id:30, type:"write", stage:"close", theme:"sweetener",
+  prompt:"You want genuine urgency to close the second call, no fake scarcity. What's the honest sweetener?",
+  model:"Real speed: 'If we get your account connected on the call, the build starts that night — you'd be looking at your own campaigns the next morning.' Never fake countdowns or expiring prices. The engine's genuine speed IS the urgency.",
+  checklist:[
+    "Used REAL speed as the sweetener?",
+    "Avoided fake scarcity / expiring prices?"
+  ],
+  recall:"Write your honest urgency line (the real speed one):"
+},
+
+// ───────────────────────────── OBJECTION ─────
+{
+  id:31, type:"write", stage:"objection", theme:"post-opener-fine",
+  prompt:"Straight after the opener: 'We're fine, all good thanks.' Give your cheeky Braun pivot + the follow-up once he answers.",
+  model:"'Good, glad someone is! Go on then — how are you getting your work in at the minute?' Then after he answers: 'Nice. And how do you top it up when it goes quiet?' Cheeky, short, agree, nosy question. Don't fight 'fine'.",
+  checklist:[
+    "Agreed / didn't fight the 'fine'?",
+    "Short + a bit cheeky?",
+    "Question open (how)?",
+    "Follow-up stayed open?"
+  ],
+  recall:"Write your 'we're fine' pivot + follow-up:"
+},
+{
+  id:32, type:"write", stage:"objection", theme:"post-opener-agency",
+  prompt:"Post-opener: 'We've already got an agency.' Give your pivot + follow-up. (Neutral — don't telegraph the hunt.)",
+  model:"'Ah, you're ahead of me then. How's it been going with them?' Then: 'How long have they been with you?' Neutral-open, let him decide if there's a crack. Avoid 'are you happy with them?' (closed + leading).",
+  checklist:[
+    "Didn't fight it / stayed warm?",
+    "Open + NEUTRAL (not 'are you happy / is it off')?",
+    "Let him supply any complaint himself?"
+  ],
+  recall:"Write your 'we've got an agency' pivot — neutral, not fishing:"
+},
+{
+  id:33, type:"write", stage:"objection", theme:"what-are-you-selling",
+  prompt:"He interrupts the opener: 'What are you trying to sell me?' Give your disarm + redirect.",
+  model:"'Nothing yet, calm down — there's nothing to buy here! Just being nosy: how's work coming in at the moment?' Then: 'What kind of jobs is it bringing you — the ones you actually want, or a bit of everything?'",
+  checklist:[
+    "Disarmed with honesty/cheek (nothing to buy yet)?",
+    "Redirected with an open question?",
+    "Follow-up open (what kind of...)?"
+  ],
+  recall:"Write your 'what are you selling?' disarm:"
+},
+{
+  id:34, type:"write", stage:"objection", theme:"not-interested",
+  prompt:"Post-opener reflex: 'Not interested.' Give your response. (Give him the exit — it makes him stay.)",
+  model:"'Fair enough, I half expected that. One thing before I go and I'll leave you be — how's work coming in at the moment?' Then: 'And when it dips, what can you actually switch on, or is it wait and hope?' The exit lowers resistance; the nosy question re-opens.",
+  checklist:[
+    "Accepted it + offered the exit ('leave you be')?",
+    "One low-pressure open question after?",
+    "Follow-up stays open?"
+  ],
+  recall:"Write your 'not interested' response with the exit built in:"
+},
+{
+  id:35, type:"write", stage:"objection", theme:"too-busy",
+  prompt:"Post-opener: 'Mate I'm too busy / booked up.' Give your pivot + follow-up.",
+  model:"'Love that, one of the good problems to have. What do you do when it goes quiet, or does it never go quiet?' Then: 'What kind of work's coming in — the good stuff, or a bit of whatever to stay busy?' Agree it's positive, then gently probe the gap.",
+  checklist:[
+    "Agreed it's a good problem?",
+    "Open question about the quiet periods?",
+    "Follow-up probes quality/gap, stays open?"
+  ],
+  recall:"Write your 'too busy' pivot + follow-up:"
+},
+{
+  id:36, type:"write", stage:"objection", theme:"too-good-to-be-true",
+  prompt:"After the pitch: 'Sounds too good to be true. What's the catch?' Handle it (Hormozi: open the books).",
+  model:"'It does sound it — I'd ask the same. So let me show you the whole model, then there's no catch left to find. The build's automated, so it costs me little — which is exactly why I can afford to only get paid when it works. That's the whole catch: my cost structure, not your risk.' Then re-ask: 'So nothing hidden to wait for — shall we set it up?'",
+  checklist:[
+    "Acknowledged (I'd ask the same)?",
+    "Dissolved the catch by opening the model?",
+    "Landed on 'the catch is my cost structure, not your risk'?",
+    "RE-ASKED for the commitment after?"
+  ],
+  recall:"Write your 'what's the catch?' answer, ending with the re-ask:"
+},
+{
+  id:37, type:"write", stage:"objection", theme:"why-free",
+  prompt:"'Why's it free? You must be desperate or new.' Handle it.",
+  model:"'Fair challenge. Two honest answers: one, the tool builds campaigns in minutes not weeks, so it's cheap enough for me to build you several and find a winner — an agency bills you for every attempt. Two, we're building our name right now, so we carry the risk to earn it. In two years, once everyone's seen it work, you won't get these terms.' Re-ask: 'Worth a look while it's cheap to look?'",
+  checklist:[
+    "Acknowledged the challenge?",
+    "Two honest reasons (economics + earning our name)?",
+    "Re-asked after?"
+  ],
+  recall:"Write your 'why's it free?' answer — two honest reasons:"
+},
+{
+  id:38, type:"write", stage:"objection", theme:"30-percent",
+  prompt:"'30% of spend? Agencies only charge 10-15%.' Handle it.",
+  model:"'That number's real — but then the retainer starts. Walk the real stack with me: management fee, plus a creative retainer fixed every month, plus pages and the rest billed round the edges — often north of 25% of spend all-in, and every penny due whether the ads work or not. We're 30% flat, everything in, unlimited iteration, and zero until leads land. And we only win when the leads work — scaling stays your call.' Re-ask: 'Bring your invoices to the demo and we'll stack them side by side — which day suits?'",
+  checklist:[
+    "Acknowledged the number's real?",
+    "Walked the FULL agency stack (not just the %)?",
+    "Hit 'due whether it works or not' vs 'zero until leads'?",
+    "Re-asked / moved to booking?"
+  ],
+  recall:"Write your 30% answer — walk the full agency stack:"
+},
+{
+  id:39, type:"write", stage:"objection", theme:"think-about-it",
+  prompt:"'I need to think about it.' (Usually a self/fear objection in a costume.) Handle it.",
+  model:"'Course, it's your business. One thing I've learned though — deciding doesn't take time, it takes information, and the demo IS the information. So what's the bit you're actually chewing on?' Whatever he names is the real objection — handle that. Don't throw maths at a fear objection.",
+  checklist:[
+    "Didn't just accept the stall?",
+    "Reframed 'time → information'?",
+    "Asked what he's actually chewing on (surface the real one)?"
+  ],
+  recall:"Write your 'I need to think about it' handle:"
+},
+{
+  id:40, type:"write", stage:"objection", theme:"talk-to-partner",
+  prompt:"'I need to talk to my business partner first.' Handle it (peel + book both).",
+  model:"'Course, as it should be. Quick one so I don't waste anyone's time — if they said no, what would their worry be?' (Whatever he names is the real objection — handle it.) Then: 'Easiest thing, get you both on the demo deciding off the same info — what time suits you both?' Book it before hanging up.",
+  checklist:[
+    "Peeled ('if they said no, what's the worry')?",
+    "Moved to getting BOTH on the call?",
+    "Booked it rather than 'call me after'?"
+  ],
+  recall:"Write your 'talk to my partner' handle — peel then book both:"
+},
+{
+  id:41, type:"mc", stage:"objection", theme:"onion-of-blame",
+  prompt:"'I need to talk to my partner' — which layer of the onion of blame, on the face of it?",
+  options:[
+    "Other people — but peel it, a self/fear objection often hides underneath",
+    "Circumstances — the timing and his situation are the real obstacle here",
+    "Self — he's personally unsure and he's hiding it behind the partner",
+    "Other people — so accept it and wait for him to come back to you later"
+  ],
+  answer:0,
+  model:"Other people (someone else is the named obstacle) — but peel it, often a self/fear objection hides underneath, which is why you ask 'if they said no, what would their worry be?'. D is the trap: never just wait, book both.",
+  recall:"Write the three blame layers and which this is:"
+},
+{
+  id:42, type:"mc", stage:"objection", theme:"onion-of-blame",
+  prompt:"'Can't afford more spend right now.' Which blame layer, and what's the move?",
+  options:[
+    "Circumstances — peel to check, then offer a smaller starting slice",
+    "Other people — ask who else needs to sign off and get them on the call",
+    "Self — reframe that deciding takes information not time, and book the demo",
+    "Circumstances — accept it as a hard no and exit with a referral"
+  ],
+  answer:0,
+  model:"Circumstances (money is the named obstacle). The MOVE: peel first — 'if the budget sorted itself tomorrow, would you do it?' If yes, it was never really money: offer a smaller starting slice, or show how the retainer they already pay could become ad spend. If peeling reveals it's not money, it was a self/fear objection in disguise.",
+  recall:"Write the move for a money objection (peel, then...):"
+},
+{
+  id:43, type:"write", stage:"objection", theme:"burned-before",
+  prompt:"'We got burned before.' Give the full Acknowledge-Associate-Ask.",
+  model:"Acknowledge + harvest: 'You and half the market — what happened?' (Let him vent fully, say it back.) Associate: 'Here's the structural difference — their fees were due whether it worked or not, and when it stopped working you paid MORE. This is the opposite shape: nothing fixed, nothing up front, paid only when leads come. The thing that burned you has been deleted from the deal.' Ask: 'Worth seeing what the opposite shape looks like, given it costs nothing to look?'",
+  checklist:[
+    "Acknowledged AND let him vent (harvest the story)?",
+    "Associate: contrasted the shape (their fixed fee vs your pay-on-results)?",
+    "Explicit 'the thing that burned you is gone'?",
+    "Ask/re-ask after?"
+  ],
+  recall:"Write the burned handle as Acknowledge → Associate → Ask:"
+},
+{
+  id:44, type:"mc", stage:"objection", theme:"we-have-someone",
+  prompt:"EARLY in the call: 'We've already got someone in-house doing it, we're covered.' Best response?",
+  options:[
+    "'Keep them, honestly — I'm not asking you to fire anyone. How are they delivering for you?'",
+    "'Most in-house setups are a mess though — how's that actually working out?'",
+    "'No worries, I'll send some info over and leave you to it.'",
+    "'We're cheaper and better than whoever you've got — worth a quick compare?'"
+  ],
+  answer:0,
+  model:"A. Keep it warm and NON-attacking — 'keep them, how are they delivering?' is neutral curiosity (NOT attacking: attacking would be B, which insults his choice). Early on, don't pitch the side-by-side test yet — dig first with a neutral question and see if there's a crack. D attacks the vendor and oversells; C gives up learning nothing.",
+  recall:"Write your non-attacking 'we're covered' reply — keep them, then a neutral question:"
+},
+{
+  id:45, type:"mc", stage:"objection", theme:"attacking-vendor",
+  prompt:"Prospect mentions his current agency. You say 'yeah they're probably ripping you off, most of them are lazy.' Why is this a mistake?",
+  options:[
+    "He chose it — insulting the agency insults him; attack the model",
+    "You can't prove they're ripping him off without seeing his invoices",
+    "It's unprofessional to swear about competitors on a call",
+    "He might repeat it back to the agency and cause you trouble"
+  ],
+  answer:0,
+  model:"He chose them and may like the people — insulting the vendor insults him. Attack the MODEL instead: 'that's how retainers work — the incentive is to stay busy, not to finish.' Never trash-talk his current setup.",
+  recall:"Write the rule: attack the ___, never the ___:"
+},
+{
+  id:46, type:"write", stage:"objection", theme:"cpl-promise",
+  prompt:"'What cost per lead can you get me? Can you beat my current number?' Handle it WITHOUT promising a number.",
+  model:"'Straight answer — I don't know yet, and nobody honest does before it runs. Anyone who promises a number there is guessing with your money. But you've got something better than my promise: your own number. Run us against it, same scoreboard, every lead and its cost live on your dashboard. Worst case we don't beat it, you switch us off, cost you nothing but ad spend you were spending anyway.' Ask: 'Want to put your baseline on the line?'",
+  checklist:[
+    "REFUSED to promise a number?",
+    "Noted anyone who promises is guessing with his money?",
+    "Flipped it to his own baseline + scoreboard?",
+    "Ask after?"
+  ],
+  recall:"Write your 'what CPL can you get?' answer — refuse, then flip to his baseline:"
+},
+{
+  id:47, type:"mc", stage:"objection", theme:"aaa",
+  prompt:"What are the three moves in Hormozi's objection framework, and which one do people most often skip?",
+  options:[
+    "Acknowledge, Associate, Ask — the skipped one is the final Ask",
+    "Acknowledge, Address, Advance — the skipped one is Address (handling the real concern)",
+    "Agree, Associate, Ask — the skipped one is Agree (validating them first)",
+    "Acknowledge, Associate, Act — the skipped one is Act (doing the onboarding)"
+  ],
+  answer:0,
+  model:"Acknowledge, Associate, Ask. The skipped one is the final ASK — re-asking for the commitment. Without it, even a perfect answer is 'a pleasant detour': the objection gets handled but nothing moves forward.",
+  recall:"Write the three A's and which one you keep forgetting:"
+},
+{
+  id:48, type:"write", stage:"objection", theme:"customers-not-on-fb",
+  prompt:"'Our customers aren't on Facebook.' Handle it (make the debate irrelevant).",
+  model:"'Maybe — I won't argue channels with you. But if the leads come, does it matter where from? And if they don't, you don't pay us. Your customer's a person before they're a customer, scrolling at nine at night like everyone else — but that's exactly the kind of thing neither of us should settle by opinion. Let the scoreboard settle it, costs you nothing to find out. Shall we set up the test?'",
+  checklist:[
+    "Avoided arguing the channel?",
+    "Made the deal shape make the debate irrelevant?",
+    "Moved to the zero-risk test + ask?"
+  ],
+  recall:"Write your 'customers aren't on Facebook' handle — don't argue, make it irrelevant:"
+},
+{
+  id:49, type:"write", stage:"objection", theme:"switching-risk",
+  prompt:"'Switching is risky — our pixel history, the learning phase, what's working now.' Handle it.",
+  model:"'Agreed — switching mid-flight is how good accounts get wrecked. Which is exactly why nothing switches. We build in YOUR account, on YOUR pixel, history intact. Your current campaigns keep running; we add alongside and you approve everything before it's live. Nothing gets ripped out, nothing migrates — you're adding a second engine and keeping score.' Ask: 'Want to see it running next to what you have?'",
+  checklist:[
+    "Agreed switching is risky?",
+    "Clarified NOTHING switches (their account/pixel, runs alongside)?",
+    "Ask after?"
+  ],
+  recall:"Write your 'switching is risky' handle — nothing switches:"
+},
+{
+  id:50, type:"write", stage:"objection", theme:"scaling-wall",
+  prompt:"'Every time we scale spend, cost per lead climbs. Why would you be different?' Handle it.",
+  model:"'That wall's real, and you've described it exactly. It comes from HOW you've had to scale — more budget into one audience just bids against yourself. We scale sideways: more campaigns, more angles running at once — the work that's unaffordable when every new campaign costs agency hours. When they're cheap to build, you scale by breadth, not by outbidding yourself.' Ask: 'That's the bit worth seeing with your own offer in it — 20 minutes?'",
+  checklist:[
+    "Validated the wall?",
+    "Explained breadth vs outbidding yourself?",
+    "Ask after?"
+  ],
+  recall:"Write your 'cost climbs when we scale' handle — breadth not outbidding:"
+},
+
+// ───────────────────────────── EXIT ─────
+{
+  id:51, type:"write", stage:"exit", theme:"referral",
+  prompt:"Genuine no — content, booked, real reasons, no heat. You accept it. Give your warm exit WITH the referral ask.",
+  model:"'No worries at all, sounds like you're in a good spot — won't waste your time. One thing before I go: who do you know that IS chasing work and struggling to fill the diary? A good word could help someone out.' Always grab the referral on a genuine no.",
+  checklist:[
+    "Accepted warmly (no pushing)?",
+    "ASKED for a referral?",
+    "Framed as helping someone / easy to answer?"
+  ],
+  recall:"Write your warm exit + referral ask:"
+},
+{
+  id:52, type:"mc", stage:"exit", theme:"referral",
+  prompt:"Across six straight calls you've exited every genuine 'no' with 'no worries, cheers, bye.' What have you left on the table every time?",
+  options:[
+    "The referral — a doorway to someone who is a fit",
+    "The email — you should always get their address for the list",
+    "The callback — you should always schedule a future follow-up",
+    "The pitch — you should always leave them your full offer"
+  ],
+  answer:0,
+  model:"The referral. Every genuine no is a doorway to someone who IS a fit — especially from booked, well-connected trades. One line out the door ('who do you know that's chasing work?') costs nothing and compounds. Your most consistent miss.",
+  recall:"Write why the referral is your biggest consistent miss:"
+},
+{
+  id:53, type:"mc", stage:"exit", theme:"real-vs-reflex-no",
+  prompt:"REFLEX no or REAL no? — bare 'not interested' in the first ten seconds, no reasons given.",
+  options:[
+    "Reflex — not considered anything, pivot once with a nosy question",
+    "Real — accept it immediately and move to the referral ask",
+    "Reflex — so push hard, he clearly hasn't understood the offer",
+    "Real — he's told you no twice in effect, don't waste his time"
+  ],
+  answer:0,
+  model:"Reflex. He's known you ten seconds and considered nothing. Don't accept yet — one cheeky pivot + nosy question to see if there's anything there. (A real no comes WITH stacked reasons.) Not push hard (C) — pivot once.",
+  recall:"Write how you tell a reflex no from a real one:"
+},
+{
+  id:54, type:"mc", stage:"exit", theme:"real-vs-reflex-no",
+  prompt:"REFLEX or REAL? — 'We're booked till June, seven of us on six days a week across multiple sites, we're stretched as it is.'",
+  options:[
+    "Real — stacked reasons, no feeling; accept, exit, grab the referral",
+    "Reflex — he's just venting about being busy, dig into the stress",
+    "Real — so pitch how you'd take the pressure off his team",
+    "Reflex — push once more, booked people still buy for later"
+  ],
+  answer:0,
+  model:"Real. Stacked, specific reasons, no feeling. Accept it, exit warm, grab the referral. Pushing this (like the 7-minute Daniel call) just annoys him.",
+  recall:"Write what makes this a REAL no and your move:"
+},
+{
+  id:55, type:"mc", stage:"exit", theme:"overstaying",
+  prompt:"Prospect has said 'I don't need this' five times with real reasons. You're still going at minute seven. What's the error?",
+  options:[
+    "Treating a stacked real no as an objection — accept it and exit",
+    "Not pitching the right benefit — find the one that matches his business",
+    "Not asking enough questions — you've missed the hidden pain",
+    "Not being persistent enough — champions push through five no's"
+  ],
+  answer:0,
+  model:"You're treating a stacked real no as an objection to overcome. Five reasons = accept it. Every angle past a real no damages the relationship and the referral. Recognising it fast and exiting IS the skill (Daniel/showroom overstay).",
+  recall:"Write the rule on how many stacked reasons = accept and exit:"
+},
+
+// ───────────────────────────── PRINCIPLES / SCRIPT ─────
+{
+  id:56, type:"mc", stage:"discovery", theme:"principle",
+  prompt:"Complete the core rule: 'No frustration, no ___. No frustration, no ___.'",
+  options:[
+    "pitch / booking — both need an admitted pain to land on",
+    "sale / referral — you need one or the other every call",
+    "rapport / trust — build those before anything else",
+    "question / answer — keep the conversation moving"
+  ],
+  answer:0,
+  model:"'No frustration, no pitch. No frustration, no booking.' A pitch aimed at no admitted pain lands on nothing; a booking with no felt problem becomes a no-show. Dig until they say something they're unhappy about.",
+  recall:"Write the rule and why both halves are true:"
+},
+{
+  id:57, type:"mc", stage:"pitch", theme:"thats-right",
+  prompt:"Why does getting to 'that's right' make bookings STICK (and skipping it cause no-shows)?",
+  options:[
+    "He feels understood and bought in — skip it and it's thin",
+    "It means he's agreed to the price — skip it and he'll haggle later",
+    "It means he's said yes out loud — skip it and he forgets the call",
+    "It means you've been talking long enough — skip it and it feels rushed"
+  ],
+  answer:0,
+  model:"'That's right' means he genuinely feels understood — you've played his whole situation back accurately, and the dynamic flips. Book without it and he agreed to a time without ever feeling you get him, so it's thin and he ghosts. ('You're right' is the bad one — it means 'shut up and go away'.)",
+  recall:"Write what 'that's right' signals, and why 'you're right' is different:"
+},
+{
+  id:58, type:"mc", stage:"discovery", theme:"world-vs-pitch-question",
+  prompt:"Which of these is a WORLD question (feels like interest), not a PITCH question (feels like selling)?",
+  options:[
+    "'What happens when it goes quiet?'",
+    "'Could you take on more work?'",
+    "'Would you be open to seeing how we help?'",
+    "'Would more leads be useful to you?'"
+  ],
+  answer:0,
+  model:"A is a world question — about his life, feels like curiosity. B, C, D all set up your offer and he can smell them. Same info often comes out, but world questions keep him open.",
+  recall:"Write the difference between a world question and a pitch question:"
+},
+{
+  id:59, type:"mc", stage:"open", theme:"two-openers",
+  prompt:"When do you use the FULL opener (hate-me + two-problem hook) vs the SHORT one-breath opener?",
+  options:[
+    "Full = default on a cold dial; Short = when they're rushing",
+    "Full = for big companies; Short = for sole traders",
+    "Full = mornings; Short = afternoons when they're busier",
+    "Full = warm leads; Short = cold leads who don't know you"
+  ],
+  answer:0,
+  model:"Full = default, when you've dialled cold and need to earn 30 seconds. Short = when they signal they're rushing ('what is it?' impatiently, mid-task). The short one isn't abandoning the script, it's responding to a cue.",
+  recall:"Write when you switch to the short opener:"
+},
+{
+  id:60, type:"write", stage:"pitch", theme:"holiday-structure",
+  prompt:"Write the universal STRUCTURE of the holiday move (the fill-in-the-blank), not an example.",
+  model:"'If [their admitted problem was gone], what would that change for you?' — Part 1: delete their pain with 'if'/'say'. Part 2 (fixed, never changes): 'what would that change/mean for you?' Then silence — they paint it, you sell it back.",
+  checklist:[
+    "Gave the 'if [problem gone]' first half?",
+    "Gave the 'what would that change for you' fixed second half?",
+    "Noted they paint it, then silence?"
+  ],
+  recall:"Write the holiday structure: Part 1 swaps, Part 2 is fixed =:"
+},
+
+// ───────────────────────────── MIXED / PERSONALITIES ─────
+{
+  id:61, type:"write", stage:"discovery", theme:"guarded-prospect",
+  prompt:"GUARDED prospect — clipped, suspicious, clearly been burned by cold callers. Not rude, just closed off. How do you lower his guard before any discovery?",
+  model:"Name it and hand him control: 'Honestly, you sound like you've had a few of these that went nowhere — I get it. Tell you what, I'll ask one thing, and if it's not relevant just say and I'm gone. How are you getting work in at the minute?' Labelling his guardedness + an easy exit relaxes him. Pushing confirms his suspicion.",
+  checklist:[
+    "LABELLED his guardedness/suspicion?",
+    "Gave him control / an easy out?",
+    "Kept the first ask light and open?",
+    "Read that THIS personality needs safety, not pressure?"
+  ],
+  recall:"Write how you disarm a guarded prospect:"
+},
+{
+  id:62, type:"write", stage:"pain", theme:"stop-on-heat",
+  prompt:"'Honestly the leads we get are a joke, people messaging then vanishing the second you mention a price.' Give your next line.",
+  model:"Label + silence: 'So you're getting messages but they ghost the second it's time to spend — tyre-kickers wasting your time.' Then stop. Let him expand on how much it annoys him before you go near a pitch.",
+  checklist:[
+    "Labelled the specific pain (ghosting at price)?",
+    "Silence after?",
+    "No pitch / no technical question?"
+  ],
+  recall:"Write your label for 'the leads are a joke, they ghost at the price':"
+},
+{
+  id:63, type:"mc", stage:"discovery", theme:"okay-cool",
+  prompt:"What's the tell when you answer with 'okay cool' and move to the next question?",
+  options:[
+    "It signals you're winging it — cut it, react to what he said",
+    "It sounds too casual — use 'understood' to be more professional",
+    "It's fine — it shows you're friendly and relaxed",
+    "It rushes him — pause longer before the next question instead"
+  ],
+  answer:0,
+  model:"'Okay cool' is filler that signals you're thinking about your next question, not responding to his answer. Cut it — go straight into your next (open) question, or react to the specific thing he said. It makes you sound uncertain.",
+  recall:"Write what 'okay cool' gives away and what to do instead:"
+},
+{
+  id:64, type:"mc", stage:"close", theme:"pre-close-check",
+  prompt:"Before you state the price, you want to flush any hidden objection. Where does the pre-close check go, and what is it?",
+  options:[
+    "BEFORE the price: 'If this does everything I've said, is there anything that'd stop you?'",
+    "AFTER the price: 'So does that price work for you or not?'",
+    "BEFORE the price: 'You're definitely going to go ahead with this, right?'",
+    "AFTER the price: 'What part of the cost are you unsure about?'"
+  ],
+  answer:0,
+  model:"Flush the hidden objection BEFORE the price, not after: 'if this does everything I've said, is there anything that'd stop you letting us build it for free?' If something's lurking, you want it out now.",
+  recall:"Write the pre-close check and where it goes (before/after price):"
+},
+{
+  id:65, type:"mc", stage:"pain", theme:"which-master",
+  prompt:"You repeat a prospect's last three words back as a question and go quiet. Which master, and its job?",
+  options:[
+    "Voss — mirroring; gets him to keep talking and expand",
+    "Braun — detaching; shows you're not fighting his brush-off",
+    "Hormozi — associating; links his problem to a story of someone who won",
+    "Voss — labelling; names the feeling to diffuse it"
+  ],
+  answer:0,
+  model:"Voss — mirroring. Its job: get him to keep talking and expand, without you asking another question.",
+  recall:"Write which master mirroring is, and what it does:"
+},
+{
+  id:66, type:"mc", stage:"objection", theme:"which-master",
+  prompt:"You reply to a brush-off with 'that's okay' and a nosy question, refusing to fight it. Which master, and the principle?",
+  options:[
+    "Braun — detach; don't fight the brush-off, defuse and pass the potato",
+    "Voss — labelling; name the brush-off to take its power away",
+    "Hormozi — acknowledge; agree first before handling the objection",
+    "Braun — mirror; repeat the brush-off back to make him reconsider"
+  ],
+  answer:0,
+  model:"Braun — detach / don't overcome. Fighting a brush-off starts a tug-of-war you lose and confirms you're a salesperson. Defuse, lower resistance, pass the potato back with a question.",
+  recall:"Write the Braun principle on brush-offs:"
+},
+{
+  id:67, type:"mc", stage:"objection", theme:"which-master",
+  prompt:"You turn 'your costs are highest when results are lowest' into 'with us it's the opposite — pause and owe nothing.' Which master, which move?",
+  options:[
+    "Hormozi — the fixed→variable reframe; flip the logic, don't argue",
+    "Voss — calibrated question; make him solve it himself",
+    "Braun — detach; step back from the objection entirely",
+    "Hormozi — acknowledge; validate the concern before answering"
+  ],
+  answer:0,
+  model:"Hormozi — the fixed→variable reframe. You flip the logic of the objection instead of arguing it.",
+  recall:"Write the fixed→variable reframe in your own words:"
+},
+{
+  id:68, type:"mc", stage:"discovery", theme:"belief-test",
+  prompt:"'Ads don't work for our type of business' — he's never actually run proper ads. Best way to test the belief?",
+  options:[
+    "'What makes you say that — something you tried, or a gut feel?'",
+    "'Actually ads work for every business, you've just done it wrong.'",
+    "'Okay, fair enough — so how are you getting work instead?'",
+    "'Would you be open to seeing proof that they do work?'"
+  ],
+  answer:0,
+  model:"A — an open question testing the BELIEF. It surfaces whether it's built on real experience or nothing (often it's thin, and that's your opening). B argues (never argue); C accepts it at face value; D is a pitch question.",
+  recall:"Write your one open question to test a shaky belief:"
+},
+{
+  id:69, type:"write", stage:"pitch", theme:"sell-the-vacation",
+  prompt:"He's admitted he wants to grow but feels stuck. Before any deal, get HIM to paint the destination.",
+  model:"'Say lead flow was genuinely solved — dialled up when you want growth, down when you're full, costing you nothing unless it's working. What would you actually do with that? Take on more lads? Raise your prices? Start that second location?' Then shut up — whatever he says is the vacation, in his words.",
+  checklist:[
+    "Set up the solved-state with 'say / if'?",
+    "Asked what HE'd do with it (paint it himself)?",
+    "Silence after?"
+  ],
+  recall:"Write how you get HIM to paint the destination:"
+},
+{
+  id:70, type:"mc", stage:"pitch", theme:"sell-the-vacation",
+  prompt:"You say 'imagine how great it'd be with loads more leads, you'd make so much more money!' Why does it land flat?",
+  options:[
+    "You painted it for him — his own picture is the only one he won't argue with",
+    "You didn't give him a specific number, so the whole thing feels vague",
+    "You mentioned making more money too directly, which comes across pushy",
+    "You said 'more leads' when you should have said a specific type of job"
+  ],
+  answer:0,
+  model:"You painted the picture for him — your dream, not his, so he bats it off (especially if he's said he's busy). The only picture he can't argue with is one HE painted. Ask the question that makes him describe it, don't describe it yourself.",
+  recall:"Write why painting it FOR them fails:"
+},
+{
+  id:71, type:"write", stage:"objection", theme:"send-me-info",
+  prompt:"'Just send me some info / an email.' Handle it (surface what it hides, keep a date attached).",
+  model:"'Can do — honestly though, it's a show-you not a brochure, the whole point is seeing your own company in it. What would an email have to say for 20 minutes to be worth it?' (What he names is the real objection.) Fallback with a date: 'I'll send a one-pager and pencil Thursday 4 — if the paper doesn't earn the call, cancel it, no hard feelings.'",
+  checklist:[
+    "Didn't just agree to send and hang up?",
+    "Surfaced what the brush-off hides?",
+    "Kept a fixed date attached as fallback?"
+  ],
+  recall:"Write your 'send me info' handle — surface + keep a date:"
+},
+{
+  id:72, type:"mc", stage:"discovery", theme:"why-now",
+  prompt:"He's engaged and talking. Which question is the engine of the whole call — the 'why now'?",
+  options:[
+    "'What made you take this call today, of all the ones you get?'",
+    "'How long have you been running the business for?'",
+    "'What's your turnover roughly these days?'",
+    "'Who normally handles the marketing side for you?'"
+  ],
+  answer:0,
+  model:"A — the 'why now'. Something itched or he wouldn't be talking. It's the most important thing you can learn. The others are useful facts but not the engine.",
+  recall:"Write your 'why now' question in your own words:"
+},
+{
+  id:73, type:"mc", stage:"pitch", theme:"sell-the-what",
+  prompt:"'Sell the holiday, not the plane flight' means:",
+  options:[
+    "Sell the outcome, not the mechanism (pixels, AI, the tool)",
+    "Explain the tech in detail so they trust the system works",
+    "Always frame it as a treat they deserve after working hard",
+    "Focus on the destination city, not the journey to get there"
+  ],
+  answer:0,
+  model:"Sell the outcome, not the mechanism. They buy controlled lead flow at a cost that only exists when it works — not pixels and AI. Every mechanism detail is a fresh surface for objections.",
+  recall:"Write what 'sell the holiday not the flight' means for your pitch:"
+},
+{
+  id:74, type:"mc", stage:"exit", theme:"soft-no-next-step",
+  prompt:"Soft no — wobbly, not hard no but not committing. You're about to let him go. What must you NOT do?",
+  options:[
+    "Letting go with no fixed next step — set a specific day and time instead",
+    "Giving him the hard sell one more time before you let him off the phone",
+    "Asking him to commit right now on the call or he loses the offer",
+    "Telling him you'll just keep calling him back until he finally decides"
+  ],
+  answer:0,
+  model:"Don't let go without a fixed next step with a time on it: 'I'll call you Thursday at 4 — if it's a no then, no hard feelings.' Never 'call me sometime'. Fix the next contact before you hang up.",
+  recall:"Write what you lock before letting a soft-no go:"
+},
+{
+  id:75, type:"write", stage:"pain", theme:"stop-on-heat",
+  prompt:"'We don't really mind the quiet months, gives us a breather.' (He's admitted quiet months exist but claimed not to mind.) Accept or probe — what do you say?",
+  model:"Probe gently — he's just confirmed the quiet months are real. 'Fair enough — and when it's quiet, is that by choice, or just how the work falls?' or 'what do you usually do to fill those stretches?' He named the thing; don't let him close the door on it (the Damien 'we don't mind the colder periods' miss).",
+  checklist:[
+    "Probed rather than accepting the 'we don't mind'?",
+    "Open question about the quiet months?",
+    "Recognised he'd admitted the quiet months exist?"
+  ],
+  recall:"Write your probe for 'we don't mind the quiet months':"
+},
+{
+  id:76, type:"mc", stage:"close", theme:"connect-now",
+  prompt:"He's said YES on the call. The yes isn't the win — the activated client is. What's the very next thing you do?",
+  options:[
+    "Stop selling and connect the ad account now, on the call",
+    "Run through the whole offer once more to lock it in",
+    "Tell him you'll email the onboarding steps to do later",
+    "Ask for the deposit before you do anything else"
+  ],
+  answer:0,
+  model:"Stop selling, connect the account NOW (screen-share if remote) — their account, their pixel, minutes to do. Every day between yes and connected is a day for cold feet. If it genuinely can't happen now, book activation within 36 hours with a tie-down.",
+  recall:"Write what you do the second he says yes:"
+},
+{
+  id:77, type:"mc", stage:"close", theme:"kept-selling",
+  prompt:"He said yes two minutes ago and you're still listing features. What's the error (the James call)?",
+  options:[
+    "Selling past the yes — it can only re-open doubt",
+    "Not being enthusiastic enough about the features you're listing",
+    "Forgetting to confirm the price one final time",
+    "Not giving him a chance to ask his own questions"
+  ],
+  answer:0,
+  model:"Selling past the yes. Every extra selling word after a yes can only lose ground — you re-open closed doors. The moment he's in, switch to reinforcing and activating, not more pitching.",
+  recall:"Write the rule on what to do (and not do) after a yes:"
+},
+{
+  id:78, type:"write", stage:"discovery", theme:"number-chaser",
+  prompt:"NUMBER-CHASER — keeps pushing 'just give me a price, what's your cost per lead, what's the guarantee.' Handle it without promising numbers or losing him.",
+  model:"'I get it, you want something concrete — fair. Straight answer: I won't throw you a cost-per-lead, because anyone who does before it runs is guessing with your money. What I CAN give you concrete is the shape: nothing until a qualified lead lands, then 30% of spend. Your own current number becomes the scoreboard. What are you roughly paying per lead now?' Give concrete on the DEAL, refuse concrete on fantasy numbers, turn his demand into discovery.",
+  checklist:[
+    "Refused to promise CPL/numbers?",
+    "Gave him something concrete (the deal shape)?",
+    "Turned his number-demand into a discovery question?"
+  ],
+  recall:"Write how you handle a number-chaser — concrete on deal, refuse on fantasy:"
+},
+{
+  id:79, type:"mc", stage:"discovery", theme:"open-vs-closed",
+  prompt:"Flip to open: 'Are you getting enough leads at the moment?'",
+  options:[
+    "'How's your lead flow looking at the minute?'",
+    "'Do you think you need more leads right now?'",
+    "'Is the lead situation okay for you currently?'",
+    "'Have you got enough work coming in at the moment?'"
+  ],
+  answer:0,
+  model:"A — open (how), invites a real answer. The other three all start closed (Do/Is/Have) and get a yes/no.",
+  recall:"Write the open version of 'are you getting enough leads?':"
+},
+{
+  id:80, type:"mc", stage:"discovery", theme:"open-vs-closed",
+  prompt:"'Flip to open' means turning a closed (yes/no) question into one that gets a story. Flip: 'Did the agency do a good job for you?'",
+  options:[
+    "'How did the agency work out for you?'",
+    "'Was the agency any good for you?'",
+    "'Did you get your money's worth from the agency?'",
+    "'Would you say the agency delivered for you?'"
+  ],
+  answer:0,
+  model:"A — 'how did it work out' is open and pulls a story. The others all stay closed (Was/Did/Would) and get a one-word answer. ('Flip to open' = swap a yes/no question for a what/how one.)",
+  recall:"Write the open version of 'did the agency do a good job?' and what 'flip to open' means:"
+},
+{
+  id:81, type:"write", stage:"objection", theme:"not-the-decision-maker",
+  prompt:"Mid-call you realise he's not the decision-maker — 'I'd have to run it past the owner.' Handle it so you don't lose the thread.",
+  model:"'No worries — quick one so I pitch the right thing: if you took this to the owner, what would his first worry be?' (surfaces the real objection) Then: 'Best thing is to get you both on a quick call so he hears it from me, not second-hand — when are you both about?' Book both, don't leave it to him to relay.",
+  checklist:[
+    "Peeled (what would the owner's worry be)?",
+    "Moved to getting the decision-maker on a call?",
+    "Avoided leaving it to him to relay?"
+  ],
+  recall:"Write your 'I'd have to ask the owner' handle:"
+},
+{
+  id:82, type:"mc", stage:"discovery", theme:"C-gate",
+  prompt:"In the CLOSER framework, which four things must you know before you leave the Clarify gate?",
+  options:[
+    "Monthly spend, rough cost per lead, who runs it, and 'why now'",
+    "Budget, growth intent, margin per job, and their risk appetite",
+    "Turnover, team size, main services, and their location",
+    "Ad platform, current agency, contract length, and their goals"
+  ],
+  answer:0,
+  model:"Monthly spend, rough cost per lead, who actually runs it, and their 'why now'. Without those four, stay in Clarify — don't move on. (B is close but not it — George's own wrong answer last time.)",
+  recall:"Write the four Clarify gates from memory:"
+},
+{
+  id:83, type:"write", stage:"pain", theme:"label-practice",
+  prompt:"He says: 'Every month the invoice turns up and I honestly couldn't tell you what they actually did for it.' Give a LABEL (not a question, not a pitch).",
+  model:"'Sounds like you're paying out every month with no real idea what you're getting back for it.' Name the feeling — the frustration of paying blind. Then silence.",
+  checklist:[
+    "Is it a label (names the feeling), not a question?",
+    "Captures the 'paying blind' frustration?",
+    "No pitch attached?"
+  ],
+  recall:"Write a label for 'I pay the invoice but don't know what they did':"
+},
+{
+  id:84, type:"write", stage:"pitch", theme:"summary-to-thats-right",
+  prompt:"Deliver the SUMMARY aiming for the big 'that's right'. Facts: pays £3k/mo to an agency, leads hit-and-miss, can't see what's working, wants to grow but nervous about cost.",
+  model:"'So let me play the whole thing back. You're handing over about three grand a month, the leads are hit and miss, and you can't actually see what's working and what's wasted — but you DO want to grow, you're just wary of pouring more into something you can't measure. Have I got that right, or am I missing something?'",
+  checklist:[
+    "Played back the WHOLE situation (cost + hit-miss + no visibility + wants growth but wary)?",
+    "In his terms, more precise than he said it?",
+    "Ended aiming for 'that's right' ('have I got that right')?"
+  ],
+  recall:"Write the summary template: 'So let me play it back... [situation], [pain], [goal]. That about right?'"
+},
+{
+  id:85, type:"mc", stage:"pain", theme:"fact-vs-objection",
+  prompt:"Which of these is HEAT you should dig into (not a fact to accept)?",
+  options:[
+    "'The leads were garbage last time, total waste of money, still annoys me.'",
+    "'We source all our own sites, always have.'",
+    "'We're a commercial outfit, one big project at a time.'",
+    "'We've got a team of twelve, all busy.'"
+  ],
+  answer:0,
+  model:"The 'garbage leads, still annoys me' one — feeling attached, a live wound. The other three are neutral facts about fit. Dig the heat, accept the facts.",
+  recall:"Write what makes the first one HEAT and the rest facts:"
+},
+{
+  id:86, type:"write", stage:"open", theme:"cold-open-honesty",
+  prompt:"Suspicious, cold: 'Who is this?' Give the honesty-disarm open (Braun).",
+  model:"'Totally fair — it's a cold call, you don't know me. Give me thirty seconds and then you decide. We get construction companies more work, and we don't charge till it lands. Worth thirty seconds?' Name the cold call yourself, it disarms the suspicion.",
+  checklist:[
+    "Named the cold call honestly (disarm)?",
+    "Gave the time-boxed ask?",
+    "Kept the offer plain (no 'deliver paid work')?"
+  ],
+  recall:"Write your honesty-disarm open for a suspicious 'who is this?':"
+},
+{
+  id:87, type:"write", stage:"objection", theme:"ai-rubbish",
+  prompt:"'AI ads? It'll be generic rubbish, I don't trust that stuff.' Handle it (Hormozi reframe).",
+  model:"'Half the AI stuff out there IS rubbish — you're right to be fussy. But AI's only rubbish when it doesn't work. Nobody asks what tools built the house, they ask if it stands. When it works, it works, and when it doesn't, we keep building till it does, because we don't get paid until your leads come.' Ask: 'So don't trust it — judge it. Your own firm, your own eyes, 20 minutes?'",
+  checklist:[
+    "Acknowledged (right to be fussy)?",
+    "Reframed: judged on results not the tool?",
+    "Tied to zero-risk (don't get paid till it works)?",
+    "Ask (judge it via demo)?"
+  ],
+  recall:"Write your 'AI is rubbish' handle — judged on results not the tool:"
+},
+{
+  id:88, type:"write", stage:"discovery", theme:"liberated-retainer",
+  prompt:"Mid-call discovery (not the opener). He's just told you he pays an agency £3k/mo. You want to make him HEAR it's a fixed cost — without pitching. What's your one question?",
+  model:"'Just so I understand — that three grand, is that fixed every month whether the ads fire or not?' That's it. One neutral question that makes HIM say the fixed cost out loud. Don't add anything about switching or ad spend yet — that's pitching, and it's not the job here. The job is to get him to hear, in his own voice, that he pays it rain or shine. Bank it, use it later.",
+  checklist:[
+    "Got HIM to articulate the fixed retainer out loud?",
+    "ONE neutral question, no pitch attached?",
+    "Resisted adding the 'it could be ad spend' bit (that's later)?"
+  ],
+  recall:"Write the one neutral question that makes him hear his fixed retainer:"
+},
+{
+  id:89, type:"mc", stage:"exit", theme:"referral-framing",
+  prompt:"Which referral ask is better?",
+  options:[
+    "'Who do you know that's chasing work and can't fill the diary?'",
+    "'Do you know anyone who might need marketing?'",
+    "'Is there anyone you could refer me to at all?'",
+    "'Have you got any mates in the trade I could call?'"
+  ],
+  answer:0,
+  model:"A — specific, paints a person, framed around THEIR pain (chasing work), so a name actually comes to mind. B/C/D are vague and closed-ish, easy to answer 'no not really'.",
+  recall:"Write your best referral ask and why it's specific:"
+},
+{
+  id:90, type:"write", stage:"pain", theme:"stop-on-heat",
+  prompt:"'The last company promised me 70 leads in two weeks and I got three, all junk.' Give your next line. (A label can be 'sounds like/looks like/feels like' OR a mirror of his words.)",
+  model:"Mirror or label + silence: 'Three? Out of seventy promised?' — then quiet, let the anger out. Or label: 'So they sold you seventy and delivered three bits of junk — you got mugged off.' Use his ACTUAL numbers, not a soft version. Don't jump to your proof story. Sit in his wound first.",
+  checklist:[
+    "Mirror or label the SPECIFIC pain (used his numbers, not generic)?",
+    "Silence / let him vent?",
+    "Resisted jumping to your own proof story?"
+  ],
+  recall:"Write a specific label or mirror for '70 promised, got 3 junk':"
+},
+{
+  id:91, type:"mc", stage:"pitch", theme:"proof-story-timing",
+  prompt:"Right after he vents about junk leads, you say 'well WE did a campaign at £3.50 a lead, 25 leads in 90 minutes...' Why can this backfire?",
+  options:[
+    "Timing — fired over a fresh wound, it sounds like one-upmanship",
+    "The numbers are too good, he won't believe them",
+    "You shouldn't share other clients' results, it's confidential",
+    "£3.50 is too cheap, it makes your service sound low-value"
+  ],
+  answer:0,
+  model:"Timing. The proof story's good, but fired over his fresh wound (before you've labelled it and got a 'that's right') it sounds like one-upmanship and he's not ready. Label the wound first, let him feel understood, THEN proof as contrast. Right ammo, wrong moment.",
+  recall:"Write when the proof story works vs backfires:"
+},
+{
+  id:92, type:"mc", stage:"objection", theme:"never-discount",
+  prompt:"Money's the genuine obstacle. What must you NEVER flex, and what CAN you flex?",
+  options:[
+    "Never the 30% — flex the starting budget instead",
+    "Never the budget — flex the 30% fee down to win the deal",
+    "Never the deposit — flex the contract length instead",
+    "Never the timeline — flex the number of campaigns instead"
+  ],
+  answer:0,
+  model:"Never discount the 30%. Flex the starting budget (a lower spend floor) instead. Discounting the fee teaches him the price was fiction; a lower starting budget shows the model's real and flexible about his cash flow.",
+  recall:"Write what you hold firm (the %) vs what you flex (the budget):"
+},
+{
+  id:93, type:"write", stage:"discovery", theme:"capacity-check",
+  prompt:"Before you'd ever book, you need to know he can USE more leads. Ask the capacity question non-pitchy.",
+  model:"'If three or four more of the right jobs landed next month, could you actually take them on, or are you flat out?' Open-ish, about his world — tells you if there's room without sounding like 'let me sell you more leads'.",
+  checklist:[
+    "Checked capacity (can he take more)?",
+    "Framed about his world, not your pitch?"
+  ],
+  recall:"Write your non-pitchy capacity question:"
+},
+{
+  id:94, type:"mc", stage:"pitch", theme:"sequencing",
+  prompt:"True or false: 'A great pitch delivered before the prospect has admitted any frustration is still worth it — at least they hear the offer.'",
+  options:[
+    "False — no admitted pain means it lands on nothing",
+    "True — the offer is strong enough to create its own interest",
+    "True — some prospects need to hear the offer before they'll open up",
+    "False — but only because the pitch should always come after the price"
+  ],
+  answer:0,
+  model:"False. A pitch with no admitted pain hits nothing — he's no reason to care, and it trains him to brush you off. The pitch only works aimed at a frustration he's confessed and you've reflected. No frustration, no pitch.",
+  recall:"Write why pitching before an admitted frustration fails:"
+},
+{
+  id:95, type:"write", stage:"close", theme:"either-or-plus-sweetener",
+  prompt:"Combine two moves: the either/or close AND the honest speed sweetener, in one smooth close.",
+  model:"'Two ways to start — run us alongside what you've got on a slice of budget, or put us on the full budget from day one. Nothing owed either way until it's producing. And if we connect the account on our call, the build starts that night — you'd see your own campaigns the next morning. Which way suits you better?'",
+  checklist:[
+    "Gave the two-path either/or?",
+    "Added the real speed sweetener?",
+    "Ended on 'which suits you' (not whether)?"
+  ],
+  recall:"Write the combined either/or + speed-sweetener close:"
+},
+{
+  id:96, type:"write", stage:"objection", theme:"no-time",
+  prompt:"'I haven't got time for this.' Handle it.",
+  model:"'That's exactly why it's worth twenty minutes — so you stop pouring money into ads that don't work and time into leads that don't buy. I'll keep it tight. Mornings or afternoons easier for you?' Flip no-time into the reason to look, then straight to booking.",
+  checklist:[
+    "Flipped no-time into the reason to look?",
+    "Went straight to a time choice?"
+  ],
+  recall:"Write your 'I haven't got time' flip:"
+},
+{
+  id:97, type:"mc", stage:"discovery", theme:"small-vs-big-label",
+  prompt:"What's the difference between a 'small label' and the 'big Label' in a call?",
+  options:[
+    "Small = ongoing 'sounds like' bricks; Big = the one summary that gates the pitch",
+    "Small = for the minor objections; Big = saved for the main objection at the end",
+    "Small = naming just one feeling; Big = naming several of his feelings at once",
+    "Small = used early in the call; Big = only brought out when closing the deal"
+  ],
+  answer:0,
+  model:"Small labels run throughout discovery — quick 'sounds like...' observations that keep him talking and build material. The big Label is the one-time structural moment: compress his whole situation into one summary aimed at a single 'that's right', and it gates the pitch.",
+  recall:"Write the difference between small labels and the big Label:"
+},
+{
+  id:98, type:"write", stage:"exit", theme:"hard-no-referral",
+  prompt:"Hard no — not rude but flat and final. Give the warm exit that STILL tries for a referral.",
+  model:"'No worries at all, I'll not keep you. One thing before I go — who do you know that's trying to grow and struggling to get the work in? A no from you can still be a favour to someone else.' Leave warm, always ask.",
+  checklist:[
+    "Warm, no pushing?",
+    "Referral ask included?",
+    "Framed as a favour to someone else?"
+  ],
+  recall:"Write your warm hard-no exit with the referral ask:"
+},
+{
+  id:99, type:"mc", stage:"pain", theme:"the-one-rule",
+  prompt:"What's the single discipline that, fixed, would most improve your booking rate?",
+  options:[
+    "Stop running past the heat — label the feeling and go silent first",
+    "Pitch the offer more confidently and earlier in the call",
+    "Ask more questions so you gather more information",
+    "Build more rapport at the start before getting to business"
+  ],
+  answer:0,
+  model:"Stop running past the heat. The second you hear feeling (anger, 'does my head in', 'nightmare', 'waste of money'), STOP — label it, go silent, let them vent, reflect to 'that's right' — before you ask another question or say a word about yourself.",
+  recall:"Write your one key discipline and exactly what it looks like:"
+},
+{
+  id:100, type:"write", stage:"close", theme:"full-flow",
+  prompt:"FULL FLOW. A prospect admits his leads are junk and it's costing him money, clearly frustrated. Walk the whole sequence from that moment to booked, naming each step in order.",
+  model:"1) LABEL the heat + silence ('so you're paying for leads that never buy — doing your head in'). 2) Let him VENT, mirror the worst bit. 3) SUMMARISE to 'that's right'. 4) Permission bridge ('can I show you why this one's different?'). 5) Let him PAINT the holiday ('if that was solved, what'd you do?'). 6) PITCH the outcome in his numbers, then the deal, then SILENCE. 7) Pre-close check + either/or CLOSE + speed sweetener. 8) BOOK a fixed time with a tie-down. 9) On yes → stop selling, connect/activate now.",
+  checklist:[
+    "Label + silence first?",
+    "Vent/mirror?",
+    "Summary to 'that's right'?",
+    "Holiday (he paints it)?",
+    "Pitch outcome → deal → silence?",
+    "Either/or close + book with tie-down?",
+    "Stop selling / activate on yes?",
+    "ORDER correct (dig before pitch)?"
+  ],
+  recall:"Write the full flow steps in order, from heat to booked:"
+}
+
+];
+const CLOSE_QUESTIONS = [
+
+// ---------- T2G core ----------
+{
+  id: 201, type:"mc", stage:"numbers", theme:"t2g-definition",
+  prompt:"What does T2G (Time to 2x Gross Margin) actually mean?",
+  options:[
+    "For every £1 of ad spend, get £2 of revenue back as fast as possible",
+    "For every £1 of ad spend, get £2 back in gross margin — T2G is the time to hit it",
+    "Double the ad budget every two months once the campaigns are working",
+    "Get twice the number of leads within the first month of going live"
+  ],
+  answer:1,
+  model:"T2G = for every £1 of ad spend, aim for £2 back in GROSS MARGIN (profit after costs), and the metric is the TIME it takes to reach that. It's the North Star — not revenue, not leads. Margin.",
+  recall:"Write T2G in your own words — what the £2 is (margin, not revenue) and what the 'time' part means:"
+},
+{
+  id: 202, type:"mc", stage:"numbers", theme:"only-double-objection",
+  prompt:"Prospect: 'So I spend £1,000 and only get £2,000 back? That's barely worth it.' What's the core of your comeback?",
+  options:[
+    "Agree the return sounds thin and offer a discount on your fee to seal it",
+    "It's £2 of gross margin per £1, not revenue — far more sales sit behind it",
+    "Promise it'll actually be more like 5x once the campaigns are optimised",
+    "Reassure him the leads are guaranteed so there's really no risk at all"
+  ],
+  answer:1,
+  model:"They're hearing 'revenue'. It's £2 of gross MARGIN (profit) per £1 spent. At a 30% margin, £2,000 margin sits on ~£6,700 of revenue — so £1k in ads drove ~£6.7k in sales, nearly 7x. Never promise a bigger multiple or discount; just reframe margin vs revenue.",
+  recall:"Write the one-line comeback to 'only double?' in your own words:"
+},
+{
+  id: 203, type:"mc", stage:"numbers", theme:"only-double-maths",
+  prompt:"£1,000 ad spend returns £2,000 in gross margin (hitting 2x). The business runs a 30% gross margin. Roughly how much REVENUE did that £1,000 drive?",
+  options:["£2,000","About £4,000","About £6,700","£20,000"],
+  answer:2,
+  model:"£2,000 margin ÷ 30% = ~£6,700 revenue. So £1k in ads → ~£6.7k in sales. That's the number that kills the 'only double' objection — it's ~7x revenue, not 2x.",
+  recall:"Write the sum out: margin ÷ margin% = revenue. Do it with their number:"
+},
+{
+  id: 204, type:"mc", stage:"numbers", theme:"margin-multiple-insight",
+  prompt:"Two firms both hit 2x T2G on £1k spend (£2k margin back). Firm A has a 50% margin, Firm B has a 15% margin. Who has the BIGGER revenue multiple?",
+  options:[
+    "Firm A (higher margin)",
+    "Firm B (lower margin)",
+    "Same for both",
+    "Can't tell"
+  ],
+  answer:1,
+  model:"Firm B. Lower margin = more revenue needed to produce the same £2k margin. B: £2k ÷ 15% = ~£13.3k revenue (13x). A: £2k ÷ 50% = £4k revenue (4x). Counter-intuitive but gold: the LOWER their margin, the bigger the revenue story you can tell them.",
+  recall:"Write why lower margin = bigger revenue multiple, in your own words:"
+},
+
+// ---------- spend rules ----------
+{
+  id: 205, type:"mc", stage:"numbers", theme:"per-job-spend",
+  prompt:"High-ticket job, the prospect's gross margin on it is £10,000. Per the per-job rule, how much should they be WILLING to spend to win that one job?",
+  options:[
+    "Up to about £500 — keep the acquisition cost low even on big jobs",
+    "Up to about £1,000 — roughly a tenth of the job's total value",
+    "Up to about £5,000 — half the job's gross margin",
+    "Up to about £10,000 — the whole margin, to guarantee you win it"
+  ],
+  answer:2,
+  model:"Per-job ceiling for high-ticket = willing to spend up to HALF the job's gross margin. £10k margin → up to ~£5k to acquire it. This is about appetite to buy customers, separate from the monthly budget rule.",
+  recall:"Write the per-job rule: 'If my margin on a job is X, I should be willing to spend ___ to win it.'"
+},
+{
+  id: 206, type:"mc", stage:"numbers", theme:"monthly-budget",
+  prompt:"What's the MONTHLY ad-budget rule of thumb (separate from the per-job ceiling)?",
+  options:[
+    "10% of monthly gross margin",
+    "50% of monthly revenue",
+    "A flat £5,000 for everyone",
+    "Whatever's left after wages"
+  ],
+  answer:0,
+  model:"~10% of monthly gross margin as the ongoing monthly ad budget. Don't confuse this with the per-job rule (half the single job's margin) — they're two different numbers for two different questions.",
+  recall:"Write both spend rules side by side so you don't mix them up — per-job vs monthly:"
+},
+{
+  id: 207, type:"write", stage:"numbers", theme:"two-spend-rules",
+  prompt:"In your own words, explain the DIFFERENCE between the per-job spend ceiling and the monthly budget rule, and when you'd use each on a call.",
+  model:"Per-job ceiling (half the job's gross margin): answers 'how much is one customer worth buying?' — use it for high-ticket, to justify a bigger acquisition cost. Monthly budget (~10% of monthly gross margin): answers 'what's a sensible ongoing ad spend?' — use it to set the recurring number. One sizes a single customer's value, the other sizes the monthly commitment.",
+  checklist:[
+    "Did you define per-job as ~half the single job's margin?",
+    "Did you define monthly as ~10% of monthly gross margin?",
+    "Did you say when each is used (one customer's worth vs monthly commitment)?"
+  ],
+  recall:"(this one you're already writing — just make it tight)"
+},
+{
+  id: 208, type:"mc", stage:"numbers", theme:"learning-budget",
+  prompt:"A prospect asks 'how much do I need to put in to even know if this works?' What's the recommended LEARNING budget to get real data?",
+  options:[
+    "Around £100 to start, just to dip a toe in and see something",
+    "£1,000–£1,500, with rapid initial tests around £300–£400 first",
+    "At least £10,000 up front to get any meaningful data at all",
+    "Nothing from him — the whole learning phase is free on us"
+  ],
+  answer:1,
+  model:"~£1,000–£1,500 to get meaningful data, with quick early tests at £300–£400. (Omar started at £1k, reviewing in 7–10 days before going to £1.5k.) This money goes to Meta/Google, not to you.",
+  recall:"Write the learning-budget numbers and who the money actually goes to:"
+},
+
+// ---------- acquisition term definitions ----------
+{
+  id: 209, type:"mc", stage:"numbers", theme:"def-cpl",
+  prompt:"What is CPL?",
+  options:[
+    "Cost Per Launch — what it costs to get a campaign live",
+    "Cost Per Lead — total ad spend divided by number of leads",
+    "Clicks Per Listing — how many clicks each ad listing gets",
+    "Conversion of Leads — the percentage of leads that close"
+  ],
+  answer:1,
+  model:"CPL = Cost Per Lead = ad spend ÷ leads. E.g. £168 spend, 36 leads = ~£4.88 CPL. It's what each enquiry cost you.",
+  recall:"Write the CPL formula and a quick example:"
+},
+{
+  id: 210, type:"mc", stage:"numbers", theme:"def-ctr",
+  prompt:"What is CTR, and what's a rough 'good' sign?",
+  options:[
+    "Cost To Run — what the campaign costs you; lower is better",
+    "Click-Through Rate — % who saw the ad and clicked; ~3–4% on Meta is strong",
+    "Customer Trust Rating — how much the audience trusts the brand",
+    "Conversion Time Ratio — how long a lead takes to become a sale"
+  ],
+  answer:1,
+  model:"CTR = Click-Through Rate = clicks ÷ impressions, as a %. The case study ran ~3.4–3.9% on Meta, roughly 3x the Meta median — a strong signal the creative's landing.",
+  recall:"Write what CTR measures and what number is 'good' on Meta:"
+},
+{
+  id: 211, type:"mc", stage:"numbers", theme:"def-cfa",
+  prompt:"What is the 'customer-financed acquisition' (CFA) model?",
+  options:[
+    "The customer effectively pays you a monthly salary to run their ads",
+    "Early customer payments cover acquisition and fund the next customer — self-sustaining",
+    "You finance the customer's first job with a loan they pay back later",
+    "A bank or lender funds the ad spend until the campaigns turn a profit"
+  ],
+  answer:1,
+  model:"CFA = the money from early customers pays for acquiring AND fulfilling them, and funds buying the next customer — so the ad budget becomes self-sustaining instead of coming out of pocket. It's the engine behind 'spend half the margin to win the job'.",
+  recall:"Write the CFA idea in one sentence — how the budget becomes self-sustaining:"
+},
+{
+  id: 212, type:"mc", stage:"numbers", theme:"def-verified-deal",
+  prompt:"When does the 30% fee actually start (the 'verified deal' trigger)?",
+  options:[
+    "As soon as the first lead comes through the door from the ads",
+    "After the first verified sale — 30% on ad spend to date, deposit offsets it",
+    "Up front, before any ads run, to cover the build and setup work",
+    "Only at the end of the year once all the results are totalled up"
+  ],
+  answer:1,
+  model:"Billing triggers at the first VERIFIED SALE, not at lead. Then 30% applies on ad spend to date, and the deposit counts toward that first fee. (This was the Omar clarification — leads ≠ billing; a confirmed sale is.)",
+  recall:"Write the exact payment trigger and what the deposit does:"
+},
+{
+  id: 213, type:"mc", stage:"numbers", theme:"def-deposit",
+  prompt:"What's the deposit for, and what happens to it?",
+  options:[
+    "It's your profit on the deal and is completely non-refundable to him",
+    "Working capital to fund acquisition; refundable if no leads in 30 days; offsets first fee",
+    "A booking fee to secure and pay for the second strategy call with you",
+    "A monthly charge that covers his access to the reporting dashboard"
+  ],
+  answer:1,
+  model:"Deposit (target £500 where feasible, flexed to £50 for Omar on trust) = working capital to fund acquisition, NOT revenue. Refundable if no leads in 30 days or if the campaign never launched, and it offsets the first fee once a sale lands.",
+  recall:"Write the deposit's three facts: what it funds, when it's refundable, what it offsets:"
+},
+
+// ---------- the close direction ----------
+{
+  id: 214, type:"mc", stage:"close", theme:"close-direction",
+  prompt:"You and Dennis agreed the best shape for a closing call. What's the order?",
+  options:[
+    "Pitch hard first, state the price, handle objections, then hope he bites",
+    "Discovery, summarise to 'that's right', explain what we do, answer, then book",
+    "Open with the price, then discovery, then a demo, then close the deal",
+    "Small talk, show testimonials, give the price, then leave it with him"
+  ],
+  answer:1,
+  model:"Discovery → summarise (to 'that's right') → explain what we do → answer their questions → book. Control comes from the right questions and the sequence, not from a hard pitch. Same spine as the cold call, just deeper.",
+  recall:"Write the five-step close order from memory:"
+},
+{
+  id: 215, type:"mc", stage:"close", theme:"closing-discipline",
+  prompt:"You've secured the sale. Dennis's closing-discipline rule says:",
+  options:[
+    "Keep selling hard afterwards to reinforce the decision he's just made",
+    "Stop the moment it's secured — don't re-open price, move to activation",
+    "Immediately upsell him onto a bigger, higher-spend package while he's hot",
+    "Re-explain the whole offer one more time so there's no confusion later"
+  ],
+  answer:1,
+  model:"Stop the moment the sale's secured. Re-opening pricing or carrying on pitching can only lose ground. Switch to onboarding/activation (deposit, connect account, build). 'Avoid missed closes by closing, then shutting up.'",
+  recall:"Write the rule in your own words — what you do the second they say yes:"
+},
+{
+  id: 216, type:"mc", stage:"close", theme:"price-hold",
+  prompt:"Prospect pushes: 'Can you do 20% instead of 30%?' (Omar tried this). Correct move?",
+  options:[
+    "Drop to 20% to get the deal over the line and keep him happy",
+    "Hold firm on the 30% — never cut the fee; flex the deposit instead",
+    "Meet him in the middle and offer 25% as a fair compromise",
+    "Politely walk away from the deal if he won't accept your price"
+  ],
+  answer:1,
+  model:"Hold the 30% — firm pricing policy, 'we don't negotiate on price.' Dennis declined Omar's 20% ask but flexed the DEPOSIT (£200 → £50) on trust grounds. Flex deposit/starting budget, never the fee %. Discounting the fee teaches them the price was fiction.",
+  recall:"Write what you hold firm on vs what you can flex:"
+},
+{
+  id: 217, type:"write", stage:"close", theme:"explain-t2g-live",
+  prompt:"On a closing call, explain T2G to the prospect in plain English — the way you'd actually say it out loud, including heading off the 'only double' confusion before it's raised.",
+  model:"'The number we point everything at is simple: for every pound you put into ads, we're aiming to get you two pounds back in gross margin — that's profit, after your costs, not just revenue. So if you put in a grand, that's two grand of margin, which at your margins is more like [their revenue number] in actual sales. And the metric we obsess over is how FAST we get you there. We're not chasing vanity lead numbers, we're chasing the speed to double your margin.'",
+  checklist:[
+    "Did you say £2 back in GROSS MARGIN (profit, not revenue)?",
+    "Did you pre-empt 'only double' by translating margin → revenue?",
+    "Did you mention the TIME/speed element?",
+    "Was it plain spoken, not jargon-y?"
+  ],
+  recall:"Write your own natural way of saying T2G out loud:"
+},
+{
+  id: 218, type:"mc", stage:"close", theme:"spend-recommendation-live",
+  prompt:"Prospect on the close: 'How much should I actually spend?' Best-shaped answer?",
+  options:[
+    "Give the same flat spend figure to everyone, whatever their business",
+    "Tie it to his numbers: ~£1-1.5k to learn, framed as buying customers not a cost",
+    "Tell him to spend as much as he possibly can to get results faster",
+    "Say you'll work out the right number for him and decide it later on"
+  ],
+  answer:1,
+  model:"Anchor to THEIR numbers, not a flat figure. Start: learning budget ~£1-1.5k to get real data (goes to Meta, not you). Frame it as buying customers: 'on a £10k-margin job you should be happy spending up to £5k to win it — this is acquisition, not a bill.' Makes spend feel like investment.",
+  recall:"Write how you'd answer 'how much should I spend?' tied to their numbers:"
+},
+{
+  id: 219, type:"write", stage:"close", theme:"summary-before-explain",
+  prompt:"Closing call. You've done discovery on a landscaper: ~3 leads/week via SEO, wants to go direct-to-customer and fill the winter pipeline, £3k min job, ~30% margin, can take more work. Write the SUMMARY you'd play back before explaining what you do.",
+  model:"'So let me make sure I've got you. You're getting a few solid leads a week off SEO, quality's good, but you want to take control of it yourself — go direct to customer rather than rely on subbing — and the real worry is keeping the pipeline full through winter. You can take on more, minimum job's around three grand, and you're running about 30% margin. That about right?' — then wait for 'that's right' before you explain anything.",
+  checklist:[
+    "Did you play back their lead source + that it's working?",
+    "Did you capture the real goal (direct-to-customer / winter pipeline)?",
+    "Did you include capacity + the key numbers (£3k, 30%)?",
+    "Did you END aiming for 'that's right' and wait?"
+  ],
+  recall:"Write the summary template: 'So let me make sure I've got you... [situation], [goal/pain], [numbers]. That about right?'"
+},
+{
+  id: 220, type:"mc", stage:"numbers", theme:"money-loves-speed",
+  prompt:"'Money loves speed' in this context means:",
+  options:[
+    "Spend the budget as fast as you can so the money's working sooner",
+    "The faster you iterate campaigns — kill losers, launch new ones — the faster you hit T2G",
+    "Close the deal as fast as possible before the prospect cools off",
+    "Leads should reply within an hour or they go cold and you lose them"
+  ],
+  answer:1,
+  model:"The system's edge is speed of iteration — auto-kill underperformers, deploy new image/text variants fast, so you reach the 2x-margin point quicker. A normal agency iterates slowly (billable hours); the tool does it rapidly, which is the whole 'time' part of T2G.",
+  recall:"Write why fast iteration is the edge, tied back to the 'time' in T2G:"
+}
+
+];
+// merge: close/numbers set appended to the main bank
+QUESTIONS.push.apply(QUESTIONS, CLOSE_QUESTIONS);
+</script>
+<script>
+/* ---------- storage ---------- */
+const LS = {
+  get(k,d){ try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d} },
+  set(k,v){ try{localStorage.setItem(k,JSON.stringify(v))}catch(e){} }
+};
+const THEME_KEY='ict_theme', FLAG_KEY='ict_flags', HIST_KEY='ict_history', LASTDAY_KEY='ict_lastday', STREAK_KEY='ict_streak';
+
+/* ---------- theme ---------- */
+function applyTheme(t){document.documentElement.setAttribute('data-theme',t);
+  document.getElementById('themeBtn').textContent = t==='dark'?'☀':'☾'; LS.set(THEME_KEY,t);}
+let theme = LS.get(THEME_KEY, (window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches)?'light':'dark');
+applyTheme(theme);
+document.getElementById('themeBtn').onclick=()=>{theme=theme==='dark'?'light':'dark';applyTheme(theme)};
+
+/* ---------- toast ---------- */
+let toastT;
+function toast(msg){const el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');
+  clearTimeout(toastT);toastT=setTimeout(()=>el.classList.remove('show'),1900);}
+
+/* ---------- helpers ---------- */
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a;}
+const TYPE_LABEL={write:'Write the response',mc:'Multiple choice',mistake:'Spot the mistake',move:'Name the move',script:'Script logic',close:'Closing'};
+const flags = LS.get(FLAG_KEY,{}); // id -> {note, q}
+
+/* ---------- home stats ---------- */
+function refreshHome(){
+  const hist=LS.get(HIST_KEY,[]);
+  document.getElementById('st-done').textContent=hist.length;
+  if(hist.length){const avg=hist.reduce((s,h)=>s+h.pct,0)/hist.length;document.getElementById('st-avg').textContent=Math.round(avg)+'%';}
+  else document.getElementById('st-avg').textContent='–';
+  document.getElementById('st-streak').textContent=LS.get(STREAK_KEY,0);
+  const fc=Object.keys(flags).length;document.getElementById('flagCount').textContent=fc;
+}
+
+/* focus chips */
+const STAGES=['open','discovery','pain','pitch','close','objection','exit','numbers'];
+let focusStages=new Set();
+function buildFocus(){
+  const box=document.getElementById('focusPick');box.innerHTML='';
+  STAGES.forEach(s=>{
+    const n=QUESTIONS.filter(q=>q.stage===s).length;
+    const c=document.createElement('div');c.className='chip';c.textContent=s+' ('+n+')';
+    c.onclick=()=>{if(focusStages.has(s))focusStages.delete(s);else focusStages.add(s);c.classList.toggle('on');};
+    box.appendChild(c);
+  });
+}
+
+/* ---------- session state ---------- */
+let session=null; // {queue:[], idx, answers:{}, scores:{}}
+
+function startSession(size){
+  let pool=QUESTIONS;
+  if(focusStages.size) pool=QUESTIONS.filter(q=>focusStages.has(q.stage));
+  let queue=shuffle(pool);
+  if(size && queue.length>size) queue=queue.slice(0,size);
+  session={queue,idx:0,scores:{},maxes:{},responses:{}};
+  document.getElementById('home').classList.add('hidden');
+  document.getElementById('results').classList.add('hidden');
+  document.getElementById('flagsView').classList.add('hidden');
+  document.getElementById('quiz').classList.remove('hidden');
+  document.getElementById('qTotal').textContent=queue.length;
+  renderQ();
+}
+
+function renderQ(){
+  const q=session.queue[session.idx];
+  const card=document.getElementById('qCard');
+  document.getElementById('qNum').textContent=session.idx+1;
+  document.getElementById('progBar').style.width=((session.idx)/session.queue.length*100)+'%';
+  const flagged=!!flags[q.id];
+
+  let inputHtml='';
+  if(q.type==='mc'){
+    inputHtml='<div class="mc-opts" id="mcOpts">'+q.options.map((o,i)=>
+      '<div class="mc-opt" data-i="'+i+'"><span class="letter">'+String.fromCharCode(65+i)+'</span><span>'+esc(o)+'</span></div>').join('')+'</div>';
+  } else {
+    inputHtml='<textarea id="answer" placeholder="Type your answer out loud in your head first, then write it..."></textarea>';
+  }
+
+  const curRating=(flags[q.id]&&flags[q.id].rating)||'';
+  card.innerHTML=
+    '<div class="tags">'+
+      '<span class="tag stage">'+q.stage+'</span>'+
+      '<span class="tag type">'+TYPE_LABEL[q.type]+'</span>'+
+      '<div class="rate-row" id="rateRow">'+
+        '<span class="rate-label">Rate this Q</span>'+
+        '<button class="rate-btn '+(curRating==='good'?'on good':'')+'" data-rate="good" title="Good question">🙂</button>'+
+        '<button class="rate-btn '+(curRating==='meh'?'on meh':'')+'" data-rate="meh" title="So-so">😐</button>'+
+        '<button class="rate-btn '+(curRating==='bad'?'on bad':'')+'" data-rate="bad" title="Bad question">😞</button>'+
+      '</div>'+
+    '</div>'+
+    '<div class="q-text">'+esc(q.prompt)+'</div>'+
+    inputHtml+
+    '<div id="fbNoteWrap" class="'+(flags[q.id]?'':'hidden')+'">'+
+      '<textarea class="flag-note" id="fbNote" placeholder="Optional — tell me why (confusing? wrong? too easy? reword it?). Saved to send back.">'+(flags[q.id]?esc(flags[q.id].note||''):'')+'</textarea>'+
+    '</div>'+
+    '<div style="margin-top:14px">'+
+      '<button class="btn" id="revealBtn">Reveal model answer</button>'+
+    '</div>'+
+    '<div class="reveal" id="reveal"></div>';
+
+  // rating handling
+  card.querySelectorAll('.rate-btn').forEach(b=>b.onclick=()=>{
+    const r=b.dataset.rate;
+    if(flags[q.id] && flags[q.id].rating===r){
+      // toggle off
+      delete flags[q.id];
+      card.querySelectorAll('.rate-btn').forEach(x=>x.className='rate-btn');
+      document.getElementById('fbNoteWrap').classList.add('hidden');
+      toast('Rating cleared');
+    } else {
+      if(!flags[q.id]) flags[q.id]={note:'',q:q.prompt,stage:q.stage,type:q.type};
+      flags[q.id].rating=r;
+      card.querySelectorAll('.rate-btn').forEach(x=>{x.className='rate-btn';});
+      b.className='rate-btn on '+r;
+      document.getElementById('fbNoteWrap').classList.remove('hidden');
+      toast(r==='good'?'Nice — logged 🙂':(r==='bad'?'Logged 😞 — add a note why':'Logged 😐'));
+    }
+    LS.set(FLAG_KEY,flags);refreshHome();
+  });
+  const fn=document.getElementById('fbNote');
+  if(fn) fn.oninput=()=>{if(flags[q.id]){flags[q.id].note=fn.value;LS.set(FLAG_KEY,flags);}};
+
+  // mc selection
+  if(q.type==='mc'){
+    let picked=null;
+    card.querySelectorAll('.mc-opt').forEach(el=>el.onclick=()=>{
+      if(session._revealed) return;
+      card.querySelectorAll('.mc-opt').forEach(x=>x.classList.remove('sel'));
+      el.classList.add('sel');picked=+el.dataset.i;session._pick=picked;
+    });
+  }
+  session._revealed=false;session._pick=null;
+  document.getElementById('revealBtn').onclick=()=>revealQ(q);
+}
+
+function revealQ(q){
+  if(session._revealed) return;
+  session._revealed=true;
+  const rev=document.getElementById('reveal');
+  document.getElementById('revealBtn').classList.add('hidden');
+
+  let html='';
+  if(q.type==='mc'){
+    // mark options
+    const opts=document.querySelectorAll('.mc-opt');
+    opts.forEach((el,i)=>{
+      if(i===q.answer) el.classList.add('correct');
+      if(session._pick===i && i!==q.answer) el.classList.add('wrong');
+    });
+    const got = session._pick===q.answer;
+    html+='<h4>'+(got?'Correct':'Not quite')+'</h4>';
+    html+='<div class="model-ans">'+esc(q.model)+'</div>';
+    // auto score mc
+    const sc=got?10:0;
+    session.scores[q.id]=sc;session.maxes[q.id]=10;
+    session.responses[q.id]={answer:(session._pick!=null?('Picked '+String.fromCharCode(65+session._pick)+': '+q.options[session._pick]):'(no pick)'),ticked:[],score:sc,recall:''};
+    html+=scoreBadge(sc,10);
+    html+=recallBox(q);
+    html+=navBtns();
+    rev.innerHTML=html;rev.classList.add('show');
+    wireRecall(q);
+    wireNav();
+    return;
+  }
+
+  // capture the typed answer at reveal time
+  const ansEl=document.getElementById('answer');
+  const typed=ansEl?ansEl.value.trim():'';
+  session.responses[q.id]={answer:typed||'(left blank)',ticked:[],score:0,recall:''};
+
+  // write/mistake/move/script/close -> model + self-score checklist
+  html+='<h4>Model answer</h4>';
+  html+='<div class="model-ans">'+esc(q.model)+'</div>';
+  html+='<h4>Grade yourself — tick only what you genuinely nailed</h4>';
+  html+='<div class="check-intro">Be strict. If it was "sort of" there, leave it unticked.</div>';
+  html+='<div id="checks">';
+  q.checklist.forEach((c,i)=>{
+    html+='<div class="check" data-i="'+i+'"><div class="box"></div><div class="ctext">'+esc(c)+'</div></div>';
+  });
+  html+='</div>';
+  html+='<div class="scoreline" id="scoreline"><div class="score-badge" id="liveScore">Tick what you got →</div></div>';
+  html+=recallBox(q);
+  html+=navBtns();
+  rev.innerHTML=html;rev.classList.add('show');
+  wireRecall(q);
+
+  const checks=rev.querySelectorAll('.check');
+  const total=q.checklist.length;
+  function recalc(){
+    const gotEls=rev.querySelectorAll('.check.yes');
+    const got=gotEls.length;
+    const sc=Math.round(got/total*10);
+    session.scores[q.id]=sc;session.maxes[q.id]=10;
+    // record which checklist items were ticked
+    const ticked=[];gotEls.forEach(el=>ticked.push(q.checklist[+el.dataset.i]));
+    if(session.responses[q.id]){session.responses[q.id].ticked=ticked;session.responses[q.id].score=sc;}
+    document.getElementById('liveScore').innerHTML='<span class="big">'+sc+'</span>/10 &nbsp;<span style="color:var(--muted);font-weight:500">('+got+' of '+total+')</span>';
+  }
+  checks.forEach(ch=>ch.onclick=()=>{ch.classList.toggle('yes');ch.querySelector('.box').textContent=ch.classList.contains('yes')?'✓':'';recalc();});
+  session.scores[q.id]=0;session.maxes[q.id]=10;
+  wireNav();
+}
+
+function recallBox(q){
+  if(!q.recall) return '';
+  const saved=(session.responses[q.id]&&session.responses[q.id].recall)||'';
+  return '<div class="recall-wrap">'+
+    '<h4 class="recall-h">✍ Write it so you remember</h4>'+
+    '<div class="recall-prompt">'+esc(q.recall)+'</div>'+
+    '<textarea class="recall-ta" id="recallTa" placeholder="Write it in your own words — this is what makes it stick...">'+esc(saved)+'</textarea>'+
+  '</div>';
+}
+function wireRecall(q){
+  const ta=document.getElementById('recallTa');
+  if(!ta) return;
+  ta.oninput=()=>{if(session.responses[q.id])session.responses[q.id].recall=ta.value;};
+}
+function scoreBadge(sc,mx){return '<div class="scoreline"><div class="score-badge"><span class="big">'+sc+'</span>/'+mx+'</div></div>';}
+function navBtns(){
+  const last=session.idx===session.queue.length-1;
+  return '<div class="nav">'+
+    (session.idx>0?'<button class="btn ghost" id="prevBtn">← Back</button>':'')+
+    '<button class="btn" id="nextBtn">'+(last?'Finish & see score':'Next question →')+'</button>'+
+  '</div>';
+}
+function wireNav(){
+  const nb=document.getElementById('nextBtn');if(nb)nb.onclick=()=>{
+    if(session.idx===session.queue.length-1) finishSession();
+    else{session.idx++;renderQ();window.scrollTo({top:0,behavior:'smooth'});}
+  };
+  const pb=document.getElementById('prevBtn');if(pb)pb.onclick=()=>{session.idx--;renderQ();window.scrollTo({top:0,behavior:'smooth'});};
+}
+
+function finishSession(){
+  const ids=Object.keys(session.scores);
+  const got=ids.reduce((s,id)=>s+session.scores[id],0);
+  const max=ids.reduce((s,id)=>s+session.maxes[id],0)||1;
+  const pct=Math.round(got/max*100);
+
+  // stage breakdown
+  const byStage={};
+  session.queue.forEach(q=>{
+    if(session.scores[q.id]==null) return;
+    byStage[q.stage]=byStage[q.stage]||{g:0,m:0};
+    byStage[q.stage].g+=session.scores[q.id];byStage[q.stage].m+=session.maxes[q.id];
+  });
+
+  // history + streak
+  const hist=LS.get(HIST_KEY,[]);
+  hist.push({date:new Date().toISOString(),pct,n:ids.length});
+  LS.set(HIST_KEY,hist);
+  updateStreak();
+
+  const answered=ids.length;
+  let html='<div class="card"><div class="result-hero">'+
+    '<div class="score">'+pct+'%</div>'+
+    '<div class="label">'+verdict(pct)+' &nbsp;·&nbsp; '+answered+' questions</div>'+
+    '</div>';
+  html+='<div class="breakdown">';
+  STAGES.forEach(s=>{if(byStage[s]){const p=Math.round(byStage[s].g/byStage[s].m*100);
+    html+='<div class="bd-row"><div class="name">'+s+'</div><div class="bd-bar"><span style="width:'+p+'%"></span></div><div class="pct">'+p+'%</div></div>';}});
+  html+='</div>';
+  // build the coaching export now, while session is live
+  lastResults=buildResultsText(pct);
+
+  html+='<div class="coach-box">'+
+    '<strong style="color:var(--ink)">Want me to coach your actual answers?</strong><br>'+
+    'Download this, drop the file into your Claude chat, and I\'ll read every answer you typed and tell you where you\'re sharp and where you\'re kidding yourself on the checklist.'+
+    '</div>';
+  html+='<div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap">'+
+    '<button class="btn" id="dlResults">⬇ Download results for coaching</button>'+
+    '<button class="btn secondary" id="copyResults">Copy instead</button>'+
+    '</div>';
+  html+='<div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap">'+
+    '<button class="btn ghost" id="againBtn">Another session</button>'+
+    '<button class="btn ghost" id="homeBtn2">Home</button>';
+  if(Object.keys(flags).length) html+='<button class="btn ghost" id="toFlags">Review '+Object.keys(flags).length+' rated</button>';
+  html+='</div></div>';
+
+  const r=document.getElementById('results');r.innerHTML=html;
+  document.getElementById('quiz').classList.add('hidden');r.classList.remove('hidden');
+  window.scrollTo({top:0,behavior:'smooth'});
+  document.getElementById('dlResults').onclick=()=>downloadResults(lastResults);
+  document.getElementById('copyResults').onclick=()=>copyText(lastResults,'Copied — paste into your Claude chat');
+  document.getElementById('againBtn').onclick=()=>{document.getElementById('home').classList.remove('hidden');r.classList.add('hidden');refreshHome();};
+  document.getElementById('homeBtn2').onclick=()=>{document.getElementById('home').classList.remove('hidden');r.classList.add('hidden');refreshHome();};
+  const tf=document.getElementById('toFlags');if(tf)tf.onclick=showFlags;
+  refreshHome();
+}
+
+let lastResults='';
+function buildResultsText(pct){
+  const lines=[];
+  lines.push('INTERIA CALL TRAINER — SESSION RESULTS FOR COACHING');
+  lines.push('Date: '+new Date().toLocaleString());
+  lines.push('Overall self-score: '+pct+'%  ·  '+Object.keys(session.responses).length+' questions');
+  lines.push('');
+  lines.push('>> George: paste this whole thing into your Claude chat and say "coach me on these".');
+  lines.push('>> Claude: read each typed answer against the model + checklist. Flag where he ticked a box he did not actually earn, where wording is weak, and give the ONE fix per weak answer. Be blunt.');
+  lines.push('');
+  lines.push('================================================================');
+  session.queue.forEach((q,i)=>{
+    const resp=session.responses[q.id];
+    if(!resp) return;
+    lines.push('');
+    lines.push('Q'+(i+1)+'  [#'+q.id+' · '+q.stage+' · '+q.type+']  — self-scored '+resp.score+'/10');
+    lines.push('PROMPT: '+q.prompt);
+    lines.push('');
+    lines.push('GEORGE\'S ANSWER: '+resp.answer);
+    lines.push('');
+    lines.push('MODEL ANSWER: '+q.model);
+    if(q.checklist&&q.checklist.length){
+      lines.push('');
+      lines.push('CHECKLIST (✓ = he ticked it):');
+      q.checklist.forEach(c=>{const ticked=resp.ticked&&resp.ticked.indexOf(c)>-1;lines.push('  '+(ticked?'[✓]':'[ ]')+' '+c);});
+    }
+    if(resp.recall&&resp.recall.trim()){
+      lines.push('');
+      lines.push('GEORGE\'S "WRITE IT TO REMEMBER" NOTE: '+resp.recall.trim());
+    }
+    lines.push('----------------------------------------------------------------');
+  });
+  return lines.join('\n');
+}
+function downloadResults(txt){
+  const blob=new Blob([txt],{type:'text/plain'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;
+  a.download='interia-results-'+new Date().toISOString().slice(0,10)+'.txt';
+  document.body.appendChild(a);a.click();document.body.removeChild(a);
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
+  toast('Downloaded — drop it into your Claude chat');
+}
+function copyText(txt,msg){
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(()=>toast(msg)).catch(()=>fallbackCopy(txt));}
+  else fallbackCopy(txt);
+}
+function verdict(p){if(p>=90)return 'Sharp. That\'s dialled in.';if(p>=75)return 'Solid. Close.';if(p>=55)return 'Getting there — drill the gaps.';if(p>=35)return 'Rough. Good, that\'s why we train.';return 'Brutal. Come back tomorrow.';}
+
+function updateStreak(){
+  const today=new Date().toDateString();
+  const last=LS.get(LASTDAY_KEY,null);
+  let streak=LS.get(STREAK_KEY,0);
+  if(last===today){/* already counted today */}
+  else{
+    const y=new Date(Date.now()-86400000).toDateString();
+    streak = (last===y)? streak+1 : 1;
+    LS.set(STREAK_KEY,streak);LS.set(LASTDAY_KEY,today);
+  }
+}
+
+/* ---------- flags view ---------- */
+function showFlags(){
+  const v=document.getElementById('flagsView');
+  const ids=Object.keys(flags);
+  ['home','quiz','results'].forEach(x=>document.getElementById(x).classList.add('hidden'));
+  v.classList.remove('hidden');
+  if(!ids.length){v.innerHTML='<div class="card"><div class="empty">No feedback yet. While you drill, rate any question with 🙂 😐 😞 and add a note — it collects here to send back so I can fix or improve them.</div><button class="btn secondary" id="fback">← Home</button></div>';
+    document.getElementById('fback').onclick=goHome;return;}
+  const emoji={good:'🙂',meh:'😐',bad:'😞'};
+  let html='<div class="card"><h2 style="margin:0 0 4px">Your feedback ('+ids.length+')</h2>'+
+    '<div class="sub" style="color:var(--muted);font-size:13px;margin-bottom:14px">Every question you rated. Send it back and I\'ll fix, improve, or cut them.</div>'+
+    '<div class="warn-banner">Feedback lives in THIS browser only — it doesn\'t sync to other devices. Hit <strong>Download backup</strong> before switching browser or device.</div>';
+  ids.forEach(id=>{const f=flags[id];
+    html+='<div style="border:1px solid var(--line);border-radius:10px;padding:13px;margin-bottom:10px;background:var(--bg)">'+
+      '<div style="font-size:11px;color:var(--gold);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">'+(emoji[f.rating]||'')+' #'+id+' · '+f.stage+'</div>'+
+      '<div style="font-size:14px;margin-bottom:8px">'+esc(f.q)+'</div>'+
+      '<div style="font-size:13px;color:var(--muted)"><strong style="color:var(--ink)">Note:</strong> '+esc(f.note||'(no note)')+'</div>'+
+      '<button class="icon-btn" style="margin-top:9px" data-unflag="'+id+'">Remove</button>'+
+    '</div>';});
+  html+='<div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:8px">'+
+    '<button class="btn" id="exportFlags">Copy all for sending back</button>'+
+    '<button class="btn secondary" id="dlFlags">⬇ Download backup</button>'+
+    '<button class="btn ghost" id="fback">← Home</button></div></div>';
+  v.innerHTML=html;
+  document.getElementById('fback').onclick=goHome;
+  document.getElementById('exportFlags').onclick=exportFlags;
+  document.getElementById('dlFlags').onclick=downloadFlags;
+  v.querySelectorAll('[data-unflag]').forEach(b=>b.onclick=()=>{delete flags[b.dataset.unflag];LS.set(FLAG_KEY,flags);refreshHome();showFlags();});
+}
+function downloadFlags(){
+  const payload={_type:'interia-trainer-flags',exported:new Date().toISOString(),flags:flags};
+  const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;
+  a.download='interia-flags-'+new Date().toISOString().slice(0,10)+'.json';
+  document.body.appendChild(a);a.click();document.body.removeChild(a);
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
+  toast('Backup downloaded — keep it safe');
+}
+function restoreFlags(file){
+  const r=new FileReader();
+  r.onload=()=>{try{
+    const data=JSON.parse(r.result);
+    const incoming=data.flags||data; // tolerate raw flag map too
+    let added=0;
+    Object.keys(incoming).forEach(id=>{if(!flags[id]){added++;}flags[id]=incoming[id];});
+    LS.set(FLAG_KEY,flags);refreshHome();showFlags();
+    toast('Restored '+Object.keys(incoming).length+' flags');
+  }catch(e){toast('Couldn\'t read that file');}};
+  r.readAsText(file);
+}
+function exportFlags(){
+  const ids=Object.keys(flags);
+  const label={good:'GOOD 🙂',meh:'SO-SO 😐',bad:'BAD 😞'};
+  let txt='INTERIA TRAINER — QUESTION FEEDBACK\n>> George rated these. Fix/improve the BAD and SO-SO ones, note what he liked about the GOOD ones.\n\n';
+  ids.forEach(id=>{const f=flags[id];txt+='#'+id+' ['+f.stage+'] — '+(label[f.rating]||'rated')+'\nQ: '+f.q+'\nNOTE: '+(f.note||'(no note)')+'\n\n';});
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(()=>toast('Copied — paste it back to your chat')).catch(()=>fallbackCopy(txt));}
+  else fallbackCopy(txt);
+}
+function fallbackCopy(txt){const ta=document.createElement('textarea');ta.value=txt;document.body.appendChild(ta);ta.select();
+  try{document.execCommand('copy');toast('Copied');}catch(e){toast('Copy failed — select manually');}document.body.removeChild(ta);}
+
+function goHome(){['quiz','results','flagsView'].forEach(x=>document.getElementById(x).classList.add('hidden'));
+  document.getElementById('home').classList.remove('hidden');refreshHome();}
+
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+/* ---------- wire home ---------- */
+document.getElementById('startBtn').onclick=()=>startSession(50);
+document.getElementById('start25').onclick=()=>startSession(25);
+document.getElementById('startAll').onclick=()=>startSession(999);
+document.getElementById('quitBtn').onclick=()=>{if(confirm('Quit this session? Progress won\'t be saved.'))goHome();};
+document.getElementById('flagsBtn').onclick=showFlags;
+document.getElementById('restoreBtn').onclick=()=>document.getElementById('restoreInput').click();
+document.getElementById('restoreInput').onchange=(e)=>{if(e.target.files&&e.target.files[0])restoreFlags(e.target.files[0]);e.target.value='';};
+buildFocus();refreshHome();
+</script>
+</body>
+</html>
